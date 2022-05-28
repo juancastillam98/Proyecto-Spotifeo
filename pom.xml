@@ -3,4 +3,21 @@
   <groupId>cenec.juanCastilla.proyecto</groupId>
   <artifactId>cenec.juanCastilla.proyecto</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+ 	  <!-- Reproducir  -->
+	  <dependency>
+	    <!-- https://mvnrepository.com/artifact/javazoom/jlayer -->
+	    <groupId>javazoom</groupId>
+	    <artifactId>jlayer</artifactId>
+	    <version>1.0.1</version>
+		</dependency>
+		<!-- Conexion con la db -->
+		<dependency>
+	    	<groupId>mysql</groupId>
+	    	<artifactId>mysql-connector-java</artifactId>
+	    	<version>8.0.28</version>
+	</dependency>
+  </dependencies>
+
+  
 </project>

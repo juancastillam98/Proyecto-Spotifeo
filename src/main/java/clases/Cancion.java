@@ -1,9 +1,19 @@
 package clases;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;//preguntar si pertenece a esta clase
+import javax.sound.sampled.Control;
+import javax.sound.sampled.LineListener;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Control.Type;
+import javax.sound.sampled.Line.Info;
+
+import javazoom.jl.player.Player;
 
 public class Cancion extends ObjetoConSonido{
 	
@@ -12,13 +22,14 @@ public class Cancion extends ObjetoConSonido{
 	private ArrayList<Estilos> estilosCancion;
 	private int cantidadReproduccion;
 	
-	public Cancion(String nombre, BufferedImage foto, Clip reproducirCancion, Artista artista, 
-			int duracion, ArrayList<Estilos> estilosCancion, int cantidadReproduccion, Clip reproducir) {
+	public Cancion(String nombre, BufferedImage foto, Player reproducirCancion, Artista artista, 
+			int duracion, ArrayList<Estilos> estilosCancion, int cantidadReproduccion) {
 		super(nombre, foto, reproducirCancion);
 		this.artista = artista;
 		this.duracion = duracion;
 		this.estilosCancion = estilosCancion;
-		this.cantidadReproduccion = cantidadReproduccion;
+		this.cantidadReproduccion=cantidadReproduccion;
+
 	}
 
 	public Artista getArtista() {
