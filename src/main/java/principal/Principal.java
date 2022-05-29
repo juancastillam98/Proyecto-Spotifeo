@@ -4,11 +4,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import clases.ObjetoConSonido;
 import clases.Usuario;
@@ -17,24 +20,33 @@ import utils.ConexionBD;
 public class Principal {
 
 	public static void main(String[] args) {
+		Blob imagenBlob=null;
 		BufferedImage foto=null;
 		byte[] fotoArray = null;
 		try {
 			foto = ImageIO.read(new File("./fotos/UsuarioHombreDefault.jpg"));
-			ByteArrayOutputStream fotoEnByte = new ByteArrayOutputStream();
+			ByteArrayOutputStream fotoEnByte = new ByteArrayOutputStream();//convierto la imagen a un arrayde bytes
 			ImageIO.write(foto, "jpg", fotoEnByte);
 			fotoEnByte.flush();
 			fotoArray = fotoEnByte.toByteArray();
+			imagenBlob=new SerialBlob(fotoArray);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 			System.err.println("No se encuentra la imagen");
+		} catch (SerialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 			
 
 		
 		try {
-			Usuario prueba = new Usuario("prueba", "prueba", fotoArray, "juan", false);
+			Usuario prueba = new Usuario("pepe", "prueba", imagenBlob, "juan", false);
+			System.out.println("Insertado correctamente");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

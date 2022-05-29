@@ -11,7 +11,7 @@ public class Usuario extends ObjetoConNombre{
 	private Boolean esPrimium;
 	private String contraseña;
 	
-	private Usuario(String nombre, byte[] foto) {//constructor para recorrer valores de del
+	private Usuario(String nombre, Blob foto) {//constructor para recorrer valores de del
 		super(nombre, foto);
 	}
 	/**
@@ -23,16 +23,16 @@ public class Usuario extends ObjetoConNombre{
 	 * @param contraseña password del usuario
 	 * @throws SQLException 
 	 */
-	public Usuario(String email, String nombre, byte[] fotoArray,  String contraseña, Boolean esPrimium) throws SQLException {
-		super(nombre, fotoArray);
-	
+	public Usuario(String email, String nombre, Blob fotoArray,  String contraseña, Boolean esPrimium) throws SQLException {
+		//super(nombre, fotoArray); no se como representar el dao, cuando hereda
+		ObjetoConNombre objNombre = new ObjetoConNombre();
 		
 		Statement cnx = ConexionBD.conectar();
 		if (cnx.executeUpdate(
 				"insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"+contraseña+"', "+esPrimium+")"
 				)>0) {
-			nombre=nombre;
-			fotoArray=fotoArray;
+			objNombre.setNombre(nombre);
+			objNombre.setFoto(fotoArray);
 			this.email = email;
 			this.contraseña = contraseña;
 			this.esPrimium = esPrimium;
@@ -51,10 +51,13 @@ public class Usuario extends ObjetoConNombre{
 	 */
 	public Usuario(String email, String contraseña) throws SQLException {
 		super();
+		ObjetoConNombre objNombre = new ObjetoConNombre();
 		
 		Statement cnx = ConexionBD.conectar();
 		ResultSet consulta= cnx.executeQuery("select * from usuario where email='"+email+"'");
 		if(consulta.next()) {
+			objNombre.setNombre(consulta.getString("nombre"));
+			objNombre.setFoto(consulta.getBlob("foto"));
 			this.email=consulta.getString("email");
 			this.esPrimium=consulta.getBoolean("esPrimium");
 			this.contraseña=consulta.getString("contraseña");
