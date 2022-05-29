@@ -12,15 +12,16 @@ import javazoom.jl.player.Player;
 public class ObjetoConSonido extends ObjetoConNombre{
 
 	private Player reproducirCancion;
-
-	public ObjetoConSonido(String nombre, BufferedImage foto, Player reproducirCancion) {
+	private String ruta;
+	
+	public ObjetoConSonido(String nombre, byte[] foto, String ruta) {
 		super(nombre, foto);
-		
+		this.ruta=ruta;
 		//reproducir
 		try {
-			FileInputStream cancionAReproducir = new FileInputStream("./musica");
+			FileInputStream cancionAReproducir = new FileInputStream(ruta);
 			this.reproducirCancion = new Player(cancionAReproducir);
-			this.reproducirCancion.play();
+			this.reproducirCancion.play();//si le pongo el play aqui se va a reproducir de manera automática
 			
 		} catch (FileNotFoundException e) {//no se encuentra la ruta
 			e.printStackTrace();
