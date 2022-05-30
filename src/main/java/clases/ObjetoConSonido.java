@@ -3,6 +3,7 @@ package clases;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.sql.Blob;
 
 import javax.sound.sampled.Clip;
 
@@ -14,7 +15,10 @@ public class ObjetoConSonido extends ObjetoConNombre{
 	private Player reproducirCancion;
 	private String ruta;
 	
-	public ObjetoConSonido(String nombre, byte[] foto, String ruta) {
+	//constructor vacío
+	public ObjetoConSonido() {}
+	
+	public ObjetoConSonido(String nombre, Blob foto, String ruta) {
 		super(nombre, foto);
 		this.ruta=ruta;
 		//reproducir

@@ -11,8 +11,8 @@ public class ObjetoConNombre {
 	public ObjetoConNombre() {}// constructor vacío,
 	
 	public ObjetoConNombre(String nombre, Blob fotoArray) {
-		this.nombre=nombre;
-		this.foto = foto;
+		this.setNombre(nombre);
+		this.setFoto(fotoArray);
 	}
 	public String getNombre() {
 		return nombre;

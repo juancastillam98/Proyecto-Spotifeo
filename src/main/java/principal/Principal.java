@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.Random;
 
@@ -19,7 +20,7 @@ import utils.ConexionBD;
 
 public class Principal {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException {
 		Blob imagenBlob=null;
 		BufferedImage foto=null;
 		byte[] fotoArray = null;
@@ -42,16 +43,18 @@ public class Principal {
 		}
 		
 			
-
-		
+		//Prueba de inserción en la bd, usuario
 		try {
-			Usuario prueba = new Usuario("pepe", "prueba", imagenBlob, "juan", false);
+			Usuario prueba = new Usuario("prueba@gmail.com", "pepe", imagenBlob, "juan", false);
 			System.out.println("Insertado correctamente");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("error");
 		}
+		
+		//Prueba de inserción en la bd, cancion
+
 		
 		
 		ObjetoConSonido objSonido=new ObjetoConSonido(
