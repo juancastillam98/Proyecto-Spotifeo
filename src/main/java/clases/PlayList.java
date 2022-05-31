@@ -11,36 +11,35 @@ import javax.print.attribute.standard.DateTimeAtCompleted;
 
 import utils.ConexionBD;
 
-public class ListaCanciones extends ObjetoConNombre{
+public class PlayList extends ObjetoConNombre{
 	//tengo que hacerle el dao de cancion y listaCanciones
 	protected ArrayList<Cancion> canciones;
 	protected Usuario usuario; //usuario que lo crea
 	protected LocalDateTime fechaCreacion;
 	//en el dao, usuario es el nombre de usuario
-	public ListaCanciones() {	}
+	public PlayList() {	}
 	
-	public ListaCanciones(String nombre, Blob foto, Usuario usuario, ArrayList<Cancion> canciones, 
+	public PlayList(String nombre, Blob foto, Usuario usuario, ArrayList<Cancion> canciones, 
 			 LocalDateTime fechaCreacion) throws SQLException {
-		
 		super(nombre, foto);
+		this.canciones=new ArrayList<Cancion>();
 		ObjetoConNombre objNombre = new ObjetoConNombre();
 		
 		String ret="";
 		for (Cancion cancion : canciones) {//me recorro el arraylist pasado por parámetro
-			ret+=ret+"\n";
+			ret+=cancion+"\n";
 		}
 		
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into listacanciones values('"+nombre+"','"+foto+"','"+usuario.getNombre()+"',"
-						+ "'"+usuario.getEmail()+"','"+fechaCreacion+"', '"+ret+"')"
+				"insert into listacanciones values('"+nombre+"','"+foto+"','"+usuario.getEmail()+"','"+fechaCreacion+"', '"+ret+"')"
 				)>0) {
 		}
 		objNombre.setNombre(nombre);//nombre de la lista
 		objNombre.setFoto(foto);
 		this.usuario=usuario;//el usuario
 		this.fechaCreacion=fechaCreacion;
-		this.canciones=canciones;
+		this.canciones=ret;
 		
 		ConexionBD.desconectar();
 	}

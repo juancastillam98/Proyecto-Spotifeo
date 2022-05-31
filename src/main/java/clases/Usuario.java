@@ -9,7 +9,7 @@ import utils.ConexionBD;
 
 public class Usuario extends ObjetoConNombre {
 	private String email;
-	private Boolean esPrimium;
+	private Boolean esPremium;
 	private String contraseña;
 
 	public Usuario() {// constructor para recorrer valores de del
@@ -22,11 +22,11 @@ public class Usuario extends ObjetoConNombre {
 	 * @param nombre     del usuario
 	 * @param fotoArray  foto de perfil del usuario
 	 * @param email      email del usuario
-	 * @param esPrimium  true si es usuario Premium, false en caso contrario
+	 * @param esPremium  true si es usuario Premium, false en caso contrario
 	 * @param contraseña password del usuario
 	 * @throws SQLException
 	 */
-	public Usuario(String email, String nombre, Blob fotoArray,  String contraseña, Boolean esPrimium)
+	public Usuario(String email, String nombre, Blob fotoArray,  String contraseña, Boolean esPremium)
 			throws SQLException {
 		super(nombre, fotoArray); // no se como representar el dao, cuando hereda
 		ObjetoConNombre objNombre = new ObjetoConNombre();
@@ -34,13 +34,13 @@ public class Usuario extends ObjetoConNombre {
 		Statement cnx = ConexionBD.conectar();
 
 		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"
-				+contraseña+"', "+esPrimium+")"
+				+contraseña+"', "+esPremium+")"
 				) > 0) {
 			objNombre.setNombre(nombre);
 			objNombre.setFoto(fotoArray);
 			this.email = email;
 			this.contraseña = contraseña;
-			this.esPrimium = esPrimium;
+			this.esPremium = esPremium;
 		} else {
 			ConexionBD.desconectar();
 			throw new SQLException("No se ha podido insertar en la bd");
@@ -66,7 +66,7 @@ public class Usuario extends ObjetoConNombre {
 			objNombre.setNombre(consulta.getString("nombre"));
 			objNombre.setFoto(consulta.getBlob("foto"));
 			this.email = consulta.getString("email");
-			this.esPrimium = consulta.getBoolean("esPrimium");
+			this.esPremium = consulta.getBoolean("esPremium");
 			this.contraseña = consulta.getString("contraseña");
 		} else {
 			ConexionBD.desconectar();
@@ -79,8 +79,8 @@ public class Usuario extends ObjetoConNombre {
 	 * @return ArrayList de listaCanciones de un usuario
 	 * @throws SQLException 
 	 */
-	public ArrayList<ListaCanciones> getBiblioteca() throws SQLException {//método que devuelve un arraylist de arraylist
-		 ArrayList<ListaCanciones> biblioteca=new ArrayList<ListaCanciones>();
+	public ArrayList<PlayList> getBiblioteca() throws SQLException {//método que devuelve un arraylist de arraylist
+		 ArrayList<PlayList> biblioteca=new ArrayList<PlayList>();
 		 //Aqui lo que hay que hacer es un select de listaCanciones where usuario = this.email
 
 		ObjetoConNombre objNombre = new ObjetoConNombre();
@@ -91,7 +91,7 @@ public class Usuario extends ObjetoConNombre {
 			
 			ResultSet consulta = smt.executeQuery("select * from listacanciones where usuario_email = '"+this.email+"'");
 			while(consulta.next()) {
-				ListaCanciones lCanciones=new ListaCanciones();
+				PlayList lCanciones=new PlayList();
 				lCanciones.usuario=this;
 				lCanciones.fechaCreacion=consulta.getTimestamp("fechaCreacion").toLocalDateTime();
 				lCanciones.canciones=(ArrayList<Cancion>) consulta.getArray("canciones");
@@ -101,27 +101,62 @@ public class Usuario extends ObjetoConNombre {
 
 			return biblioteca;
 	}
+	
 	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setEmail(String email) throws SQLException {
+		
+		Statement smt = ConexionBD.conectar();
+		if(smt.executeUpdate(
+				"update usuario set email ='"+email+"' where email = '"+this.email+"'"
+				)>0) {
+			this.email=email;
+		}else {
+			ConexionBD.desconectar();
+			throw new SQLException("no se ha podido cambiar el email");
+		}
+		ConexionBD.desconectar();
 	}
+	
 	public String getContraseña() {
 		return contraseña;
 	}
 
-	public void setContraseña(String contraseña) {
-		this.contraseña = contraseña;
+	public void setContraseña(String contraseña) throws SQLException {
+
+
+		Statement smt = ConexionBD.conectar();
+		if(smt.executeUpdate(
+				"update usuario set contraseña ='"+contraseña+"' where email = '"+this.email+"'"
+				)>0) {
+			this.contraseña=contraseña;
+		}else {
+			ConexionBD.desconectar();
+			throw new SQLException("no se ha podido cambiar el la contraseña");
+		}
+		ConexionBD.desconectar();
+		
 	}
 
-	public Boolean getEsPrimium() {
-		return esPrimium;
+	public Boolean getesPremium() {
+		return esPremium;
 	}
 
-	public void setEsPrimium(Boolean esPrimium) {
-		this.esPrimium = esPrimium;
+	public void setesPremium(Boolean esPremium) throws SQLException {
+		
+		Statement smt = ConexionBD.conectar();
+		if(smt.executeUpdate(
+				"update usuario set espremium ="+esPremium+" where email = '"+this.email+"'"
+				)>0) {
+			this.esPremium=esPremium;
+		}else {
+			ConexionBD.desconectar();
+			throw new SQLException("no se ha podido cambiar el estado de Premium");
+		}
+		ConexionBD.desconectar();
+		
 	}
 
 	

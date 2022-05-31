@@ -14,13 +14,16 @@ import javax.imageio.ImageIO;
 import javax.sql.rowset.serial.SerialBlob;
 import javax.sql.rowset.serial.SerialException;
 
+import clases.Artista;
+import clases.Cancion;
+import clases.Estilos;
 import clases.ObjetoConSonido;
 import clases.Usuario;
 import utils.ConexionBD;
 
 public class Principal {
 
-	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException {
+	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
 		Blob imagenBlob=null;
 		BufferedImage foto=null;
 		byte[] fotoArray = null;
@@ -46,15 +49,22 @@ public class Principal {
 		//Prueba de inserción en la bd, usuario
 		try {
 			Usuario prueba = new Usuario("prueba@gmail.com", "pepe", imagenBlob, "juan", false);
-			System.out.println("Insertado correctamente");
+			System.out.println("Usuario Insertado correctamente");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.err.println("error");
+			System.err.println("error, no se ha podido insertar el usuario ");
 		}
 		
-		//Prueba de inserción en la bd, cancion
-
+		
+		
+		//Artista lostFrecuencies = new Artista("losfrecuencies@gmail.com", "lostfrecuencies", imagenBlob, "juan", true, null);
+		Artista pruebaArtista = new Artista("probando@gmail.com", "probando", imagenBlob, "juan", true);
+		System.out.println("Artista insertado correctamente");
+		
+		Cancion pruebaCancion = new Cancion("cancionPrueba", pruebaArtista, imagenBlob,
+				"./musica/Angèle - Flou (Lost Frequencies Remix).mp3", 110, Estilos.POP, 100);
+		
 		
 		
 		ObjetoConSonido objSonido=new ObjetoConSonido(
