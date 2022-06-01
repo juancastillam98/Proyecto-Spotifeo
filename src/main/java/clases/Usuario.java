@@ -76,12 +76,12 @@ public class Usuario extends ObjetoConNombre {
 
 	/**
 	 * método que devuelve las listas de canciones de un usuario
-	 * @return ArrayList de listaCanciones de un usuario
+	 * @return ArrayList de playslist de un usuario
 	 * @throws SQLException 
 	 */
 	public ArrayList<PlayList> getBiblioteca() throws SQLException {//método que devuelve un arraylist de arraylist
 		 ArrayList<PlayList> biblioteca=new ArrayList<PlayList>();
-		 //Aqui lo que hay que hacer es un select de listaCanciones where usuario = this.email
+		 //Aqui lo que hay que hacer es un select de playslist where usuario = this.email
 
 		ObjetoConNombre objNombre = new ObjetoConNombre();
         String nombreLista="";
@@ -89,7 +89,7 @@ public class Usuario extends ObjetoConNombre {
         
 		Statement smt = ConexionBD.conectar();
 			
-			ResultSet consulta = smt.executeQuery("select * from listacanciones where usuario_email = '"+this.email+"'");
+			ResultSet consulta = smt.executeQuery("select * from playslist where usuario_email = '"+this.email+"'");
 			while(consulta.next()) {
 				PlayList lCanciones=new PlayList();
 				lCanciones.usuario=this;

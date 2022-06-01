@@ -12,8 +12,9 @@ import javax.print.attribute.standard.DateTimeAtCompleted;
 import utils.ConexionBD;
 
 public class PlayList extends ObjetoConNombre{
-	//tengo que hacerle el dao de cancion y listaCanciones
-	protected ArrayList<Cancion> canciones;
+	//tengo que hacerle el dao de cancion y playlist
+	//protected ArrayList<Cancion> canciones; el arrayList, es la ListaCanciones
+	protected ArrayList<ListaCanciones> listaCanciones;
 	protected Usuario usuario; //usuario que lo crea
 	protected LocalDateTime fechaCreacion;
 	//en el dao, usuario es el nombre de usuario
@@ -22,7 +23,7 @@ public class PlayList extends ObjetoConNombre{
 	public PlayList(String nombre, Blob foto, Usuario usuario, ArrayList<Cancion> canciones, 
 			 LocalDateTime fechaCreacion) throws SQLException {
 		super(nombre, foto);
-		this.canciones=new ArrayList<Cancion>();
+		this.listaCanciones=new ArrayList<Cancion>();
 		ObjetoConNombre objNombre = new ObjetoConNombre();
 		
 		String ret="";
@@ -32,7 +33,7 @@ public class PlayList extends ObjetoConNombre{
 		
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into listacanciones values('"+nombre+"','"+foto+"','"+usuario.getEmail()+"','"+fechaCreacion+"', '"+ret+"')"
+				"insert into playlist values('"+nombre+"','"+foto+"','"+usuario.getEmail()+"','"+fechaCreacion+"', '"+ret+"')"
 				)>0) {
 		}
 		objNombre.setNombre(nombre);//nombre de la lista
@@ -44,15 +45,31 @@ public class PlayList extends ObjetoConNombre{
 		ConexionBD.desconectar();
 	}
 
+	public ArrayList<ListaCanciones> getListaCanciones() {
+		return listaCanciones;
+	}
+
+	public void setListaCanciones(ArrayList<ListaCanciones> listaCanciones) {
+		this.listaCanciones = listaCanciones;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
 	
-
-	public ArrayList<Cancion> getCanciones() {
-		return canciones;
-	}
-
-	public void setCanciones(ArrayList<Cancion> canciones) {
-		this.canciones = canciones;
-	}
 	
 	
 
