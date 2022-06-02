@@ -28,7 +28,7 @@ public class Usuario extends ObjetoConNombre {
 	 */
 	public Usuario(String email, String nombre, Blob fotoArray,  String contraseña, Boolean esPremium)
 			throws SQLException {
-		super(nombre, fotoArray); // no se como representar el dao, cuando hereda
+		super(); // no se como representar el dao, cuando hereda
 		ObjetoConNombre objNombre = new ObjetoConNombre();
 
 		Statement cnx = ConexionBD.conectar();
@@ -36,9 +36,9 @@ public class Usuario extends ObjetoConNombre {
 		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"
 				+contraseña+"', "+esPremium+")"
 				) > 0) {
-			objNombre.setNombre(nombre);
-			objNombre.setFoto(fotoArray);
 			this.email = email;
+			this.setNombre(nombre);
+			this.setFoto(fotoArray);
 			this.contraseña = contraseña;
 			this.esPremium = esPremium;
 		} else {
@@ -58,16 +58,15 @@ public class Usuario extends ObjetoConNombre {
 	 */
 	public Usuario(String email, String contraseña) throws SQLException {
 		super();
-		ObjetoConNombre objNombre = new ObjetoConNombre();
 
 		Statement cnx = ConexionBD.conectar();
 		ResultSet consulta = cnx.executeQuery("select * from usuario where email='" + email + "'");
 		if (consulta.next()) {
-			objNombre.setNombre(consulta.getString("nombre"));
-			objNombre.setFoto(consulta.getBlob("foto"));
 			this.email = consulta.getString("email");
-			this.esPremium = consulta.getBoolean("esPremium");
+			this.setNombre(consulta.getString("nombre"));
+			this.setFoto(consulta.getBlob("foto"));
 			this.contraseña = consulta.getString("contraseña");
+			this.esPremium = consulta.getBoolean("esPremium");
 		} else {
 			ConexionBD.desconectar();
 		}
@@ -89,7 +88,7 @@ public class Usuario extends ObjetoConNombre {
         
 		Statement smt = ConexionBD.conectar();
 			
-			ResultSet consulta = smt.executeQuery("select * from playslist where usuario_email = '"+this.email+"'");
+			ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+this.email+"'");
 			while(consulta.next()) {
 				PlayList lCanciones=new PlayList();
 				lCanciones.usuario=this;

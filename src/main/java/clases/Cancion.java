@@ -28,15 +28,15 @@ public class Cancion extends ObjetoConSonido{
 	
 	public Cancion(String nombre, Artista artista, Blob foto, String ruta,  
 			int duracion, Estilos estiloCancion, int cantidadReproduccion) throws SQLException {
-		super(nombre, foto, ruta);
+		super();
 		
 		ObjetoConSonido ocs = new ObjetoConSonido();
 		
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into cancion values ('"+nombre+"','"+artista+"','"+estiloCancion+"',"+duracion+",'"+foto+"',"+cantidadReproduccion+")"				
+				"insert into cancion values ('"+nombre+"','"+artista.getEmail()+"','"+estiloCancion+"',"+duracion+",'"+foto+"',"+cantidadReproduccion+")"				
 				)>0) {
-			ocs.setNombre(nombre);
+			this.setNombre(nombre);
 			this.artista = artista;//quiero insertar el nombre del artista
 			this.estiloCancion = estiloCancion;
 			this.duracion = duracion;
@@ -66,6 +66,14 @@ public class Cancion extends ObjetoConSonido{
 		}
 		ConexionBD.desconectar();
 		
+	}
+	
+	
+	public Cancion(String nc, int idArtista) {
+	smt.executeQuery("select * from cancion where nombre='"+nc+"' and idArtista='"+idArtista+"'");
+	//COn ese select y el restultset puedes rellenar todas las variables internas de cancion menos el artista
+	//Una vez rellenes todos los datos de cancion
+	this.artista=new Arista(idArtista); //Esto tiene que ser un constructor en artsita que a partir del id te haga un select * from artista y te rellene todos los datos del artsita desdfe bd
 	}
 
 	public int getDuracion() {
@@ -129,6 +137,9 @@ public class Cancion extends ObjetoConSonido{
 		
 	}
 
+	public String toString() {
+		return this.nombre+" "+this.artista.getNombre();
+	}
 	
 	
 	

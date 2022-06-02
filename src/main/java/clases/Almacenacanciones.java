@@ -5,12 +5,12 @@ import java.sql.Statement;
 
 import utils.ConexionBD;
 
-public class ListaCanciones {
+public class Almacenacanciones {
 	private Cancion cancion;
+	private PlayList playlist;
 	private Usuario usuario;
-	private PlayList playListId;
 	
-	public ListaCanciones() {
+	public Almacenacanciones() {
 		
 	}
 	/***
@@ -20,12 +20,13 @@ public class ListaCanciones {
 	 * @param playList id de la playlist
 	 * @throws SQLException 
 	 */
-	public ListaCanciones(Cancion cancion, Artista usuario, PlayList playList) throws SQLException{
-		
+	public Almacenacanciones(Cancion cancion, Artista usuario, PlayList playList) throws SQLException{
+		//insert into almacenacanciones values('cancion1', 'miplaylist', 'juan@juan');
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into listacanciones values('"+cancion+"','"+usuario.getEmail()+"','"+playList+"')"
+				"insert into listacanciones values('"+cancion+"','"+playList+"','"+usuario.getEmail()+"')"
 				)>0) {
+			this.playlist=playList;
 			this.cancion=cancion;
 			this.usuario=usuario;
 		}else {
