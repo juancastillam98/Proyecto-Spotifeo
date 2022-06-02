@@ -25,6 +25,9 @@ public class Cancion extends ObjetoConSonido{
 	protected int duracion;
 	protected Estilos estiloCancion;
 	protected int cantidadReproduccion;
+	public Cancion() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public Cancion(String nombre, Artista artista, Blob foto, String ruta,  
 			int duracion, Estilos estiloCancion, int cantidadReproduccion) throws SQLException {

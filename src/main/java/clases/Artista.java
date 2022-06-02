@@ -10,6 +10,9 @@ import utils.ConexionBD;
 
 public class Artista extends Usuario{
 	private ArrayList<PlayList> discografía;
+	public Artista() {
+		// TODO Auto-generated constructor stub
+	}
 	//artista de pruebe
 	public Artista(String email, String nombre,  Blob foto, String contraseña, Boolean esPremium) throws SQLException { 
 		super(email, nombre, foto, contraseña, esPremium);

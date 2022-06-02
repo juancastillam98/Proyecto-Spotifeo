@@ -93,7 +93,6 @@ public class Usuario extends ObjetoConNombre {
 				PlayList lCanciones=new PlayList();
 				lCanciones.usuario=this;
 				lCanciones.fechaCreacion=consulta.getTimestamp("fechaCreacion").toLocalDateTime();
-				lCanciones.canciones=(ArrayList<Cancion>) consulta.getArray("canciones");
 				biblioteca.add(lCanciones);
 			}
 			ConexionBD.desconectar();

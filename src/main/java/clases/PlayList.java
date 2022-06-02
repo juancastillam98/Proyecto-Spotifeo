@@ -2,6 +2,7 @@ package clases;
 
 import java.awt.image.BufferedImage;
 import java.sql.Blob;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
@@ -34,12 +35,16 @@ public class PlayList extends ObjetoConNombre{
 		
 		ConexionBD.desconectar();
 	}
+	 
 
-	public ArrayList<Almacenacanciones> getalmacenacanciones() {
-		return almacenacanciones;
+
+	public ArrayList<Almacenacanciones> getAlmacenacanciones() {//devuelve las canciones de la playlist
+		 ArrayList<Almacenacanciones> canciones=new ArrayList<Almacenacanciones>();
+		 
+		return canciones;
 	}
 
-	public void setalmacenacanciones(ArrayList<Almacenacanciones> almacenacanciones) {
+	public void setAlmacenacanciones(ArrayList<Almacenacanciones> almacenacanciones) {
 		this.almacenacanciones = almacenacanciones;
 	}
 
