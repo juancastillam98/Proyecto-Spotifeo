@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import javax.sound.sampled.AudioFormat;
@@ -24,32 +25,49 @@ public class Cancion extends ObjetoConSonido{
 	protected Artista artista;
 	protected int duracion;
 	protected Estilos estiloCancion;
+	protected LocalDateTime fechaIncorporacion;
 	protected int cantidadReproduccion;
 	public Cancion() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Cancion(String nombre, Artista artista, Blob foto, String ruta,  
-			int duracion, Estilos estiloCancion, int cantidadReproduccion) throws SQLException {
+	public Cancion(String foto, String nombre, Artista artista, Estilos estiloCancion, 
+			LocalDateTime fechaIncorporacion, int duracion, int cantidadReproduccion) throws SQLException {
 		super();
-		
-		ObjetoConSonido ocs = new ObjetoConSonido();
-		
+				
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into cancion values ('"+nombre+"','"+artista.getEmail()+"','"+estiloCancion+"',"+duracion+",'"+foto+"',"+cantidadReproduccion+")"				
+				"insert into cancion values ('"+foto+"','"+nombre+"','"+artista.getEmail()+"','"+estiloCancion+"',"
+						+ ""+fechaIncorporacion+",'"+duracion+"',"+cantidadReproduccion+")"				
 				)>0) {
+			this.setFoto(foto);
 			this.setNombre(nombre);
 			this.artista = artista;//quiero insertar el nombre del artista
 			this.estiloCancion = estiloCancion;
+			this.fechaIncorporacion=fechaIncorporacion;
 			this.duracion = duracion;
-			ocs.setFoto(foto);
 			this.cantidadReproduccion=cantidadReproduccion;
 		}else {
 			ConexionBD.desconectar();
 			throw new SQLException("No se ha podido insertar la cancion "+nombre);
 		}
 		ConexionBD.desconectar();
+	}
+
+	public Estilos getEstiloCancion() {
+		return estiloCancion;
+	}
+
+	public void setEstiloCancion(Estilos estiloCancion) {
+		this.estiloCancion = estiloCancion;
+	}
+
+	public LocalDateTime getFechaIncorporacion() {
+		return fechaIncorporacion;
+	}
+
+	public void setFechaIncorporacion(LocalDateTime fechaIncorporacion) {
+		this.fechaIncorporacion = fechaIncorporacion;
 	}
 
 	public Artista getArtista() {
@@ -72,13 +90,6 @@ public class Cancion extends ObjetoConSonido{
 	}
 	
 	
-	public Cancion(String nc, int idArtista) {
-	smt.executeQuery("select * from cancion where nombre='"+nc+"' and idArtista='"+idArtista+"'");
-	//COn ese select y el restultset puedes rellenar todas las variables internas de cancion menos el artista
-	//Una vez rellenes todos los datos de cancion
-	this.artista=new Arista(idArtista); //Esto tiene que ser un constructor en artsita que a partir del id te haga un select * from artista y te rellene todos los datos del artsita desdfe bd
-	}
-
 	public int getDuracion() {
 		return duracion;
 	}
@@ -99,11 +110,11 @@ public class Cancion extends ObjetoConSonido{
 		
 	}
 
-	public Estilos getestiloCancion() {
+	public Estilos getEstilos() {
 		return estiloCancion;
 	}
 
-	public void setestiloCancion(Estilos estiloCancion) throws SQLException {
+	public void setEstilos(Estilos estiloCancion) throws SQLException {
 		
 		ObjetoConSonido ocs = new ObjetoConSonido();
 		Statement smt = ConexionBD.conectar();
@@ -140,8 +151,13 @@ public class Cancion extends ObjetoConSonido{
 		
 	}
 
+	@Override
 	public String toString() {
-		return this.nombre+" "+this.artista.getNombre();
+		return "Cancion"
+				+ "\n nombre=" + this.getNombre() 
+				+ "\n artista=" + this.getArtista().getNombre() 
+				+ "\n cantidad Reproducciones=" + this.cantidadReproduccion
+				+ "\n duracion=" + this.getDuracion();
 	}
 	
 	

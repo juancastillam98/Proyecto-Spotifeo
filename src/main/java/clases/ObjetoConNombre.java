@@ -6,13 +6,13 @@ import java.sql.Blob;
 public class ObjetoConNombre {
 	private String nombre;
 	//private BufferedImage foto;	
-	private Blob foto;
+	private String foto;
 	
 	public ObjetoConNombre() {}// constructor vacío,
 	
-	public ObjetoConNombre(String nombre, Blob fotoArray) {
+	public ObjetoConNombre(String nombre, String foto) {
 		this.setNombre(nombre);
-		this.setFoto(fotoArray);
+		this.setFoto(foto);
 	}
 	public String getNombre() {
 		return nombre;
@@ -20,11 +20,11 @@ public class ObjetoConNombre {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public Blob getFoto() {
+	public String getFoto() {
 		return foto;
 	}
-	public void setFoto(Blob blob) {
-		this.foto = blob;
+	public void setFoto(String string) {
+		this.foto = string;
 	}
 
 	

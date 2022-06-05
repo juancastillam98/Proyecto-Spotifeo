@@ -14,14 +14,13 @@ import utils.ConexionBD;
 
 public class PlayList extends ObjetoConNombre{
 
-	protected ArrayList<Almacenacanciones> almacenacanciones;
-	protected Usuario usuario; //usuario que lo crea
+	protected Usuario usuario; //usuario que lo crea, el email
 	protected LocalDateTime fechaCreacion;
 	//en el dao, usuario es el nombre de usuario
 	public PlayList() {	}
 	
-	public PlayList(Blob foto, String nombre, Usuario usuario, LocalDateTime fechaCreacion) throws SQLException {
-		super(nombre, foto);		
+	public PlayList(String foto, String nombre, Usuario usuario, LocalDateTime fechaCreacion) throws SQLException {
+		super();		
 		
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
@@ -36,17 +35,71 @@ public class PlayList extends ObjetoConNombre{
 		ConexionBD.desconectar();
 	}
 	 
+	/***
+	 * Metodo que inserta una cancion en una playlist
+	 * @param cancion cancion a insertar en la lista
+	 * @param usuario usuario que inserta la cancion
+	 * @param playList id de la playlist
+	 * @throws SQLException 
+	 */
+	public void añadirCancion(Cancion cancion, PlayList playList, Artista usuario) throws SQLException{
+		//insert into almacenacanciones values('cancion1', 'miplaylist', 'juan@juan');
+		Statement smt = ConexionBD.conectar();
+		Cancion c = new Cancion();
+		if(smt.executeUpdate(
+				"insert into almacenacanciones values('"+cancion+"','"+playList+"','"+usuario.getEmail()+"')"
+				)>0) {
+			c.setNombre(cancion.getNombre());
+			this.setNombre(playList.getNombre());
+			this.usuario=new Usuario(usuario.getEmail());
+		}else {
+			ConexionBD.desconectar();
+			throw new SQLException("No se ha podido insertar en la lista");
+		}
+		ConexionBD.desconectar();
+	}
+	
+	/**
+	 * Método que devuelve todas las canciones de una playlist
+	 * @param listaPlayList nombre de la playlis
+	 * @return canciones de una playlist
+	 */
+	public ArrayList<Cancion> getCancionesPlayList(PlayList listaPlayList){
+		/*select almacenacanciones.cancion_nombre 
+		from almacenacanciones join playlist on almacenacanciones.playlist_nombre = playlist.nombre
+		where almacenacanciones.playlist_nombre ='miplaylist';
 
-
-	public ArrayList<Almacenacanciones> getAlmacenacanciones() {//devuelve las canciones de la playlist
-		 ArrayList<Almacenacanciones> canciones=new ArrayList<Almacenacanciones>();
-		 
+		 * */
+		ArrayList<Cancion> canciones= new ArrayList<Cancion>();
+		Statement smt = ConexionBD.conectar();
+		try {
+			ResultSet cursor = smt.executeQuery("select cancion.foto, cancion.nombre, artista.nombre, "
+					+ "cancion.estilocancion, cancion.fechaincorporacion"
+					+ "from almacenacanciones "
+					+ "join playlist on almacenacanciones.playlist_nombre = playlist.nombre"
+					+ "join cancion on almacenacanciones.cancion_nombre = cancion.nombre"
+					+ "join artista on cancion.artista_email = artista.email"
+					+ "where almacenacanciones.playlist_nombre ='"+listaPlayList+"'");
+			while(cursor.next()) {
+				Cancion cancion = new Cancion();
+				Artista artista = new Artista();
+				cancion.setFoto(cursor.getString("cancion.foto"));
+				cancion.setNombre(cursor.getString("cancion.nombre"));
+				cancion.artista=new Artista(cursor.getString("artista.nombre"));
+				//cancion.estiloCancion = new Estilos(cursor.getString("cancion.estilocancion"));
+				cancion.estiloCancion = Estilos.valueOf(cursor.getString("cancion.estilocancion"));
+				cancion.fechaIncorporacion=cursor.getTimestamp("cancion.fechaincorporacion").toLocalDateTime();
+				canciones.add(cancion);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ConexionBD.desconectar();
 		return canciones;
+		
 	}
 
-	public void setAlmacenacanciones(ArrayList<Almacenacanciones> almacenacanciones) {
-		this.almacenacanciones = almacenacanciones;
-	}
 
 	public Usuario getUsuario() {
 		return usuario;

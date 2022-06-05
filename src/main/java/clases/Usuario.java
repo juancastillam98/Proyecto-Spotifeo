@@ -26,11 +26,10 @@ public class Usuario extends ObjetoConNombre {
 	 * @param contraseña password del usuario
 	 * @throws SQLException
 	 */
-	public Usuario(String email, String nombre, Blob fotoArray,  String contraseña, Boolean esPremium)
+	public Usuario(String email, String nombre, String fotoArray,  String contraseña, Boolean esPremium)
 			throws SQLException {
 		super(); // no se como representar el dao, cuando hereda
-		ObjetoConNombre objNombre = new ObjetoConNombre();
-
+		
 		Statement cnx = ConexionBD.conectar();
 
 		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"
@@ -64,13 +63,32 @@ public class Usuario extends ObjetoConNombre {
 		if (consulta.next()) {
 			this.email = consulta.getString("email");
 			this.setNombre(consulta.getString("nombre"));
-			this.setFoto(consulta.getBlob("foto"));
+			this.setFoto(consulta.getString("foto"));
 			this.contraseña = consulta.getString("contraseña");
 			this.esPremium = consulta.getBoolean("esPremium");
 		} else {
 			ConexionBD.desconectar();
 		}
 		ConexionBD.desconectar();
+	}
+	/**
+	 * Constructor que devuelve toda la información de un usuario concreto
+	 */
+	public Usuario(String email) throws SQLException {
+		Statement smt = ConexionBD.conectar();
+		ResultSet consulta = smt.executeQuery("select * from usuario where email = '"+email+"'");
+		if(consulta.next()) {
+			this.email=consulta.getString("email");
+			this.setNombre(consulta.getString("nombre"));
+			this.esPremium=consulta.getBoolean("espremium");
+			this.contraseña=consulta.getString("contraseña");
+		}else {
+			ConexionBD.desconectar();
+			//throw new UsuarioNoExisteException("No existe el mail en la BD");
+			throw new SQLException("no se ha podido devolver la información del usuario");
+		}
+		ConexionBD.desconectar();
+		
 	}
 
 	/**
@@ -81,19 +99,16 @@ public class Usuario extends ObjetoConNombre {
 	public ArrayList<PlayList> getBiblioteca() throws SQLException {//método que devuelve un arraylist de arraylist
 		 ArrayList<PlayList> biblioteca=new ArrayList<PlayList>();
 		 //Aqui lo que hay que hacer es un select de playslist where usuario = this.email
-
-		ObjetoConNombre objNombre = new ObjetoConNombre();
-        String nombreLista="";
-        Date fechaCreacion=null;
-        
 		Statement smt = ConexionBD.conectar();
 			
 			ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+this.email+"'");
 			while(consulta.next()) {
-				PlayList lCanciones=new PlayList();
-				lCanciones.usuario=this;
-				lCanciones.fechaCreacion=consulta.getTimestamp("fechaCreacion").toLocalDateTime();
-				biblioteca.add(lCanciones);
+				PlayList listas=new PlayList();
+				listas.setFoto(consulta.getString("foto"));
+				listas.fechaCreacion=consulta.getTimestamp("fechaincorporacion").toLocalDateTime();
+				listas.setNombre(consulta.getString("nombre"));
+				listas.usuario=new Usuario(consulta.getString("usuario_email"));
+				biblioteca.add(listas);
 			}
 			ConexionBD.desconectar();
 
@@ -155,6 +170,53 @@ public class Usuario extends ObjetoConNombre {
 		}
 		ConexionBD.desconectar();
 		
+	}
+	/**
+	 * Metodo para cambiar el nombre de usuario
+	 * @param nombre Nuevo nombre del usuario
+	 * @throws SQLException
+	 */
+	public void cambiaNombre(String nombre) throws SQLException {
+		Statement smt= ConexionBD.conectar();
+
+		if(smt.executeUpdate(
+				"update usuario set nombre = '"+nombre+"' where email='"+this.email+"'"
+				)>0) {
+			this.setNombre(nombre);
+		}else {
+			ConexionBD.desconectar();
+			throw new SQLException("no se ha podido cambiar el nombre");
+		}
+		ConexionBD.desconectar();
+	}
+	
+	/**
+	 * Metodo para cambiar la foto de usuario
+	 * @param nombre Nuevo nombre del usuario
+	 * @throws SQLException
+	 */
+	public void cambiaFoto(String foto) throws SQLException {
+		Statement smt= ConexionBD.conectar();
+		if(smt.executeUpdate(
+				"update usuario set foto = '"+foto+"' where email='"+this.email+"'"
+				)>0) {
+			this.setFoto(foto);
+		}else {
+			ConexionBD.desconectar();
+			throw new SQLException("no se ha podido cambiar el nombre");
+		}
+		ConexionBD.desconectar();
+	}
+	
+
+	@Override
+	public String toString() {
+		return "Usuario"
+				+ "\n email=" + this.getEmail()
+				+ "\n nombre=" + this.getNombre()
+				+ "\n foto=" + this.getFoto()
+				+ "\n pass=" + "********"
+				+ "\n activo=" + this.esPremium;
 	}
 
 	
