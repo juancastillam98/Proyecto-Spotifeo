@@ -40,6 +40,7 @@ public class PlayList extends ObjetoConNombre{
 	 * @param cancion cancion a insertar en la lista
 	 * @param usuario usuario que inserta la cancion
 	 * @param playList id de la playlist
+	 * @return 
 	 * @throws SQLException 
 	 */
 	public void añadirCancion(Cancion cancion, PlayList playList, Artista usuario) throws SQLException{
@@ -65,11 +66,6 @@ public class PlayList extends ObjetoConNombre{
 	 * @return canciones de una playlist
 	 */
 	public ArrayList<Cancion> getCancionesPlayList(PlayList listaPlayList){
-		/*select almacenacanciones.cancion_nombre 
-		from almacenacanciones join playlist on almacenacanciones.playlist_nombre = playlist.nombre
-		where almacenacanciones.playlist_nombre ='miplaylist';
-
-		 * */
 		ArrayList<Cancion> canciones= new ArrayList<Cancion>();
 		Statement smt = ConexionBD.conectar();
 		try {

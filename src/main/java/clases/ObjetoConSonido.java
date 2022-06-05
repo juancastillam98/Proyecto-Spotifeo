@@ -17,8 +17,13 @@ public class ObjetoConSonido extends ObjetoConNombre{
 	
 	//constructor vacío
 	public ObjetoConSonido() {}
-	
-	public ObjetoConSonido(String nombre, Blob foto, String ruta) {
+	/**
+	 * Constructor que accede a las canciones
+	 * @param nombre
+	 * @param foto
+	 * @param ruta
+	 */
+	public ObjetoConSonido(String nombre, String foto, String ruta) {
 		super(nombre, foto);
 		this.ruta=ruta;
 		//reproducir

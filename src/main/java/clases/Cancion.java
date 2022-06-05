@@ -38,7 +38,7 @@ public class Cancion extends ObjetoConSonido{
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
 				"insert into cancion values ('"+foto+"','"+nombre+"','"+artista.getEmail()+"','"+estiloCancion+"',"
-						+ ""+fechaIncorporacion+",'"+duracion+"',"+cantidadReproduccion+")"				
+						+ "'"+fechaIncorporacion+"',"+duracion+","+cantidadReproduccion+")"				
 				)>0) {
 			this.setFoto(foto);
 			this.setNombre(nombre);

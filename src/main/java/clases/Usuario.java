@@ -31,7 +31,6 @@ public class Usuario extends ObjetoConNombre {
 		super(); // no se como representar el dao, cuando hereda
 		
 		Statement cnx = ConexionBD.conectar();
-
 		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"
 				+contraseña+"', "+esPremium+")"
 				) > 0) {
