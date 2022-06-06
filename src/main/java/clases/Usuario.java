@@ -94,7 +94,7 @@ public class Usuario extends ObjetoConNombre {
 			this.esPremium = consulta.getBoolean("esPremium");
 		} else {
 			ConexionBD.desconectar();
-			throw new UsuarioIncorrectoException("No existe el email "+this.email+" en la BD");
+			throw new UsuarioIncorrectoException("No existe el email "+email);
 		}
 		ConexionBD.desconectar();
 	}
@@ -112,8 +112,7 @@ public class Usuario extends ObjetoConNombre {
 			this.contraseña=consulta.getString("contraseña");
 		}else {
 			ConexionBD.desconectar();
-			//throw new UsuarioNoExisteException("No existe el mail en la BD");
-			throw new UsuarioIncorrectoException("No existe el email "+this.email+" en la BD");
+			throw new UsuarioIncorrectoException("No existe el email "+email);
 		}
 		ConexionBD.desconectar();
 		

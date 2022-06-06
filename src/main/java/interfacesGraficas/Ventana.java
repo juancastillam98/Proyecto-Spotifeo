@@ -50,6 +50,12 @@ public class Ventana extends JFrame{
 			case "login":
 				this.pantallaActual=new PantallaLogin(this);
 				break;
+			case "inicio":
+				this.pantallaActual=new PantallaInicio(this);
+				break;
+			case "registro":
+				this.pantallaActual=new PantallaRegistro(this);
+				break;
 			default:
 				break;
 		}

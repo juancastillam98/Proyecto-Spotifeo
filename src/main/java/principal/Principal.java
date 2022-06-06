@@ -31,7 +31,7 @@ public class Principal {
 
 	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
 		Ventana ventana = new Ventana();
-		
+		/*
 		
 		Blob imagenBlob=null;
 		BufferedImage foto=null;
@@ -94,7 +94,7 @@ public class Principal {
 		
 		ObjetoConSonido objSonido=new ObjetoConSonido(
 				"prueba", null, "./musica/Angèle - Flou (Lost Frequencies Remix).mp3");
-		
+		*/
 	}
 
 }
