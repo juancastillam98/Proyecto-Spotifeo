@@ -22,11 +22,17 @@ import clases.Estilos;
 import clases.ObjetoConSonido;
 import clases.PlayList;
 import clases.Usuario;
+import excepciones.ContraseñaIncorrectaException;
+import excepciones.NombreInvalidoException;
+import interfacesGraficas.Ventana;
 import utils.ConexionBD;
 
 public class Principal {
 
 	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
+		Ventana ventana = new Ventana();
+		
+		
 		Blob imagenBlob=null;
 		BufferedImage foto=null;
 		byte[] fotoArray = null;
@@ -59,6 +65,12 @@ public class Principal {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("error, no se ha podido insertar el usuario ");
+		} catch (NombreInvalidoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContraseñaIncorrectaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		ArrayList<PlayList> pruebArrayList=new ArrayList<PlayList>();
 		

@@ -5,6 +5,10 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import excepciones.ContraseñaIncorrectaException;
+import excepciones.EmailInvalidoException;
+import excepciones.NombreInvalidoException;
+import excepciones.UsuarioIncorrectoException;
 import utils.ConexionBD;
 
 public class Usuario extends ObjetoConNombre {
@@ -25,10 +29,19 @@ public class Usuario extends ObjetoConNombre {
 	 * @param esPremium  true si es usuario Premium, false en caso contrario
 	 * @param contraseña password del usuario
 	 * @throws SQLException
+	 * @throws NombreInvalidoException 
+	 * @throws ContraseñaIncorrectaException 
 	 */
 	public Usuario(String email, String nombre, String fotoArray,  String contraseña, Boolean esPremium)
-			throws SQLException {
+			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException {
 		super(); // no se como representar el dao, cuando hereda
+		
+		if(!nombreValido(nombre)) {//si el nombre está vacío, devuelve true (ha negado 2 veces, es lo mismo que no negar ninguna vez
+			throw new NombreInvalidoException("El nombre está vacío");
+		}
+		if (cantidadCaracteresIncorrecta(contraseña)) {
+			throw new ContraseñaIncorrectaException("La contraseña debe tener al menos 4 caracteres");
+		}
 		
 		Statement cnx = ConexionBD.conectar();
 		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"
@@ -53,27 +66,43 @@ public class Usuario extends ObjetoConNombre {
 	 * @param email      email del usuario
 	 * @param contraseña password del usuario
 	 * @throws SQLException
+	 * @throws ContraseñaIncorrectaException 
+	 * @throws UsuarioIncorrectoException 
+	 * @throws EmailInvalidoException 
 	 */
-	public Usuario(String email, String contraseña) throws SQLException {
+	public Usuario(String email, String contraseña) throws SQLException, ContraseñaIncorrectaException, UsuarioIncorrectoException, EmailInvalidoException {
 		super();
-
+		//LOGIN
 		Statement cnx = ConexionBD.conectar();
 		ResultSet consulta = cnx.executeQuery("select * from usuario where email='" + email + "'");
 		if (consulta.next()) {
+			this.contraseña=consulta.getString("contraseña");
+			if(!this.contraseña.equals(contraseña)) {//si la contraseña que hay en la bd, no es la misma que la introducida
+				//está diciendo, devuelve true si las contraseñas son distintas
+				ConexionBD.desconectar();
+				throw new ContraseñaIncorrectaException("contraseña incorrecta");
+			}
+			
 			this.email = consulta.getString("email");
+			if(!this.email.equals(email)) {//si el email de la bd no es el mismo
+				ConexionBD.desconectar();
+				throw new EmailInvalidoException("email incorrecto");
+			}
+			
 			this.setNombre(consulta.getString("nombre"));
 			this.setFoto(consulta.getString("foto"));
-			this.contraseña = consulta.getString("contraseña");
 			this.esPremium = consulta.getBoolean("esPremium");
 		} else {
 			ConexionBD.desconectar();
+			throw new UsuarioIncorrectoException("No existe el email "+this.email+" en la BD");
 		}
 		ConexionBD.desconectar();
 	}
 	/**
 	 * Constructor que devuelve toda la información de un usuario concreto
+	 * @throws UsuarioIncorrectoException 
 	 */
-	public Usuario(String email) throws SQLException {
+	public Usuario(String email) throws SQLException, UsuarioIncorrectoException {
 		Statement smt = ConexionBD.conectar();
 		ResultSet consulta = smt.executeQuery("select * from usuario where email = '"+email+"'");
 		if(consulta.next()) {
@@ -84,7 +113,7 @@ public class Usuario extends ObjetoConNombre {
 		}else {
 			ConexionBD.desconectar();
 			//throw new UsuarioNoExisteException("No existe el mail en la BD");
-			throw new SQLException("no se ha podido devolver la información del usuario");
+			throw new UsuarioIncorrectoException("No existe el email "+this.email+" en la BD");
 		}
 		ConexionBD.desconectar();
 		
@@ -99,7 +128,7 @@ public class Usuario extends ObjetoConNombre {
 		 ArrayList<PlayList> biblioteca=new ArrayList<PlayList>();
 		 //Aqui lo que hay que hacer es un select de playslist where usuario = this.email
 		Statement smt = ConexionBD.conectar();
-			
+		try {	
 			ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+this.email+"'");
 			while(consulta.next()) {
 				PlayList listas=new PlayList();
@@ -109,10 +138,31 @@ public class Usuario extends ObjetoConNombre {
 				listas.usuario=new Usuario(consulta.getString("usuario_email"));
 				biblioteca.add(listas);
 			}
-			ConexionBD.desconectar();
-
-			return biblioteca;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (UsuarioIncorrectoException e) {
+			e.printStackTrace();
+		}
+		ConexionBD.desconectar();
+		return biblioteca;
 	}
+	
+	
+	//FUNCIONES PARA PROTEGER LOS CAMPOS
+	private static boolean nombreValido(String nombre) {
+		return !nombre.isBlank();// si el nombre no está en blanco, devuelve true.
+		
+	}
+	public static boolean cantidadCaracteresIncorrecta(String pass) {
+		if(pass.length()<=3) {
+			return true;
+		}else {
+			return false;
+		}
+		
+	}
+	
+	//GETTERS Y SETTERS
 	
 	public String getEmail() {
 		return email;
@@ -136,9 +186,11 @@ public class Usuario extends ObjetoConNombre {
 		return contraseña;
 	}
 
-	public void setContraseña(String contraseña) throws SQLException {
-
-
+	public void setContraseña(String contraseña) throws SQLException, ContraseñaIncorrectaException {
+		if (cantidadCaracteresIncorrecta(contraseña)) {
+			throw new ContraseñaIncorrectaException("La contraseña debe tener al menos 4 caracteres");
+		}
+		
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
 				"update usuario set contraseña ='"+contraseña+"' where email = '"+this.email+"'"
