@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Blob;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
@@ -31,6 +32,8 @@ public class Principal {
 
 	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
 		Ventana ventana = new Ventana();
+		
+	
 		/*
 		
 		Blob imagenBlob=null;

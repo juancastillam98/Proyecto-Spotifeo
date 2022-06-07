@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ConexionBD {
-	private final static String cadenaConexionBD="jdbc:mysql://127.0.0.1:3306/spotifeo";
+	private final static String cadenaConexionBD="jdbc:mysql://127.0.0.1:3310/spotifeo";
 	private final static String usuarioBD = "root";
 	private final static String passwordBD = "";
 	private static Connection conexion;

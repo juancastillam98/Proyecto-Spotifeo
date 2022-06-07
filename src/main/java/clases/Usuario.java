@@ -5,10 +5,12 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import excepciones.ContraseñaIncorrectaExcepcion;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.NombreInvalidoException;
 import excepciones.UsuarioIncorrectoException;
+import excepciones.UsuarioYaExiste;
 import utils.ConexionBD;
 
 public class Usuario extends ObjetoConNombre {
@@ -31,10 +33,11 @@ public class Usuario extends ObjetoConNombre {
 	 * @throws SQLException
 	 * @throws NombreInvalidoException 
 	 * @throws ContraseñaIncorrectaException 
+	 * @throws UsuarioYaExiste 
 	 */
 	public Usuario(String email, String nombre, String fotoArray,  String contraseña, Boolean esPremium)
-			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException {
-		super(); // no se como representar el dao, cuando hereda
+			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException, UsuarioYaExiste {
+		super(); 
 		
 		if(!nombreValido(nombre)) {//si el nombre está vacío, devuelve true (ha negado 2 veces, es lo mismo que no negar ninguna vez
 			throw new NombreInvalidoException("El nombre está vacío");
@@ -43,7 +46,19 @@ public class Usuario extends ObjetoConNombre {
 			throw new ContraseñaIncorrectaException("La contraseña debe tener al menos 4 caracteres");
 		}
 		
+		
 		Statement cnx = ConexionBD.conectar();
+		
+		//Compruebo si el usuario ya existe en la bd
+		ResultSet consulta = cnx.executeQuery("select * from usuario where email='"+email+"'");
+		if(consulta.next()) {//si esto devuelve un true
+			this.email=consulta.getString("email");//almaceno la contraseña DE LA DB
+			if(this.email.equals(email)) {//si la email que hay en la bd es el mismo que el introducido
+				ConexionBD.desconectar();
+				throw new UsuarioYaExiste("Ya existe el usuario "+email);
+			}
+		}
+		
 		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"
 				+contraseña+"', "+esPremium+")"
 				) > 0) {
@@ -78,7 +93,6 @@ public class Usuario extends ObjetoConNombre {
 		if (consulta.next()) {
 			this.contraseña=consulta.getString("contraseña");
 			if(!this.contraseña.equals(contraseña)) {//si la contraseña que hay en la bd, no es la misma que la introducida
-				//está diciendo, devuelve true si las contraseñas son distintas
 				ConexionBD.desconectar();
 				throw new ContraseñaIncorrectaException("contraseña incorrecta");
 			}
