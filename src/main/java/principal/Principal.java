@@ -31,7 +31,40 @@ import utils.ConexionBD;
 public class Principal {
 
 	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
-		Ventana ventana = new Ventana();
+		
+		//ARGUMENTOS
+		String contraseñaDefault=null;
+		String emailDefault=null;
+		
+		for(byte i=0;i< args.length; i++) {
+			if(args[i].equals("-email")){//por ejemplo, si le paso -nombre
+				emailDefault=args[i+1];//indico que me coja lo siguiente, es decir el nombre
+			}
+			if(args[i].equals("-contraseña")){
+				contraseñaDefault=args[i+1];
+			}
+			if (args[i].equals("-h") || args[i].equals("-help") || args[i].equals("-!")) {
+				System.out.println("Programa para dibujar un texto con un pero"
+						+"\nArgumentos posibles"
+						+"\n\t-email establece el email del usuario"
+						+"\n\t-contraseña establece la contraseña usuario");
+			//salir del break
+				System.exit(0);
+			}
+		}
+
+		
+		if(emailDefault!=null) {//si hay email
+			System.out.println("Recibido por argumentos " + emailDefault);
+		}
+		if (contraseñaDefault!=null) {//si hay contraseña
+			System.out.println("Recibido por argumentos " + contraseñaDefault);
+		}
+		
+		
+		//HASTA AQUI
+		
+		Ventana ventana = new Ventana(args);
 		
 	
 		/*

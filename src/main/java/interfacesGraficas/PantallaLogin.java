@@ -10,7 +10,7 @@ import javax.swing.SwingConstants;
 
 import clases.Usuario;
 import componentesVisuales.BotonNegro;
-import excepciones.Contrase�aIncorrectaException;
+import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.UsuarioIncorrectoException;
 
@@ -30,9 +30,10 @@ import javax.swing.JSeparator;
 public class PantallaLogin extends JPanel{
 	private Ventana ventana;
 	private JTextField introducirEmail;
-	private JPasswordField introducirContrase�a;
+	private JPasswordField introducirContraseña;
 	
-	public PantallaLogin(Ventana v) {
+	public PantallaLogin(Ventana v, final String[] args) {
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 143, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 15, 5, 0, 0, 10, 0, 10, 0, 0, 0};
@@ -77,23 +78,23 @@ public class PantallaLogin extends JPanel{
 		add(introducirEmail, gbc_introducirEmail);
 		introducirEmail.setColumns(10);
 		
-		final JLabel campoContrase�a = new JLabel("Contrase\u00F1a");
-		campoContrase�a.setHorizontalAlignment(SwingConstants.CENTER);
-		campoContrase�a.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
-		GridBagConstraints gbc_campoContrase�a = new GridBagConstraints();
-		gbc_campoContrase�a.insets = new Insets(0, 0, 5, 5);
-		gbc_campoContrase�a.gridx = 2;
-		gbc_campoContrase�a.gridy = 7;
-		add(campoContrase�a, gbc_campoContrase�a);
+		final JLabel campoContraseña = new JLabel("Contrase\u00F1a");
+		campoContraseña.setHorizontalAlignment(SwingConstants.CENTER);
+		campoContraseña.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
+		GridBagConstraints gbc_campoContraseña = new GridBagConstraints();
+		gbc_campoContraseña.insets = new Insets(0, 0, 5, 5);
+		gbc_campoContraseña.gridx = 2;
+		gbc_campoContraseña.gridy = 7;
+		add(campoContraseña, gbc_campoContraseña);
 		
-		introducirContrase�a = new JPasswordField();
-		introducirContrase�a.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
-		GridBagConstraints gbc_introducirContrase�a = new GridBagConstraints();
-		gbc_introducirContrase�a.insets = new Insets(0, 0, 5, 5);
-		gbc_introducirContrase�a.fill = GridBagConstraints.HORIZONTAL;
-		gbc_introducirContrase�a.gridx = 4;
-		gbc_introducirContrase�a.gridy = 7;
-		add(introducirContrase�a, gbc_introducirContrase�a);
+		introducirContraseña = new JPasswordField();
+		introducirContraseña.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+		GridBagConstraints gbc_introducirContraseña = new GridBagConstraints();
+		gbc_introducirContraseña.insets = new Insets(0, 0, 5, 5);
+		gbc_introducirContraseña.fill = GridBagConstraints.HORIZONTAL;
+		gbc_introducirContraseña.gridx = 4;
+		gbc_introducirContraseña.gridy = 7;
+		add(introducirContraseña, gbc_introducirContraseña);
 		botonIniciarSesion.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
 		GridBagConstraints gbc_botonIniciarSesion = new GridBagConstraints();
 		gbc_botonIniciarSesion.gridwidth = 3;
@@ -119,19 +120,29 @@ public class PantallaLogin extends JPanel{
 		//Click en iniciar sesion
 		botonIniciarSesion.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				String email=introducirEmail.getText();
-				String contrase�a = new String(introducirContrase�a.getPassword());
+			public void mouseClicked(MouseEvent e) {		
 				
+				
+				String email=introducirEmail.getText();
+				String contraseña = new String(introducirContraseña.getPassword());
+				
+				if (email.length() <= 0 || contraseña.length() <= 0) {
+					email = args[1];
+					contraseña = args[3];
+				}
+				System.out.println("argumenotos pantallalogin "+args[1]+" - "+args[3]);
+
 				try {
-					ventana.usuarioLogueado=new Usuario(email, contrase�a);//usuarioLogueado es un atributo de ventana
+					ventana.usuarioLogueado=new Usuario(email, contraseña);//usuarioLogueado es un atributo de ventana
+					System.out.println("Email: "+email);
+					System.out.println("Contraseña: "+contraseña);
 					JOptionPane.showMessageDialog(ventana, "Bienvenid@"+ventana.usuarioLogueado.getNombre()
 					,"Inicio de sesion correcto",
 					JOptionPane.INFORMATION_MESSAGE);
 					ventana.irAPantalla("inicio");
 				} catch (SQLException e1) {
 					e1.printStackTrace();
-				} catch (Contrase�aIncorrectaException e1) {
+				} catch (ContraseñaIncorrectaException e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(ventana, e1.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 				} catch (UsuarioIncorrectoException e1) {

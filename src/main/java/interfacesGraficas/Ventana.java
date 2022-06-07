@@ -12,9 +12,8 @@ public class Ventana extends JFrame{
 	
 	protected Usuario usuarioLogueado;
 	private JPanel pantallaActual;
-	
-	public Ventana() {
-	
+	private String[] args;
+	public Ventana(String[] args) {
 		this.setSize(600, 500);
 		this.setTitle("Spotifeo");
 		this.setIconImage(new ImageIcon("./fotos/icono.png").getImage());
@@ -25,10 +24,17 @@ public class Ventana extends JFrame{
 		this.setResizable(false);
 		//pantalla completa
 		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		
-		this.pantallaActual= new PantallaLogin(this);
+		this.setArgs(args);
+		this.pantallaActual= new PantallaLogin(this, this.getArgs());
 		this.setContentPane(this.pantallaActual);//busca la pantalla login y la pone
 		this.setVisible(true);
+	}
+	public String[] getArgs() {
+		return args;
+	}
+	private void setArgs(String[] args) {
+		this.args=args;
+		
 	}
 	/** ejemplo de pantalla con hashMap
 	public void irAPantalla(String nombrePantalla) {
@@ -48,7 +54,7 @@ public class Ventana extends JFrame{
 		this.pantallaActual=null;//cada vez que cambie de pantalla, la pongo en null
 		switch (nombrePantalla) {//en función del nombre que escriba, me redirigirá a una página u otra
 			case "login":
-				this.pantallaActual=new PantallaLogin(this);
+				this.pantallaActual=new PantallaLogin(this, this.getArgs());
 				break;
 			case "inicio":
 				this.pantallaActual=new PantallaInicio(this);
