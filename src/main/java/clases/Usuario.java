@@ -5,7 +5,6 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import excepciones.ContraseñaIncorrectaExcepcion;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.NombreInvalidoException;
@@ -14,9 +13,9 @@ import excepciones.UsuarioYaExiste;
 import utils.ConexionBD;
 
 public class Usuario extends ObjetoConNombre {
-	private String email;
-	private Boolean esPremium;
-	private String contraseña;
+	protected String email;
+	protected Boolean esPremium;
+	protected String contraseña;
 
 	public Usuario() {// constructor para recorrer valores de del
 		super();
@@ -131,9 +130,43 @@ public class Usuario extends ObjetoConNombre {
 		ConexionBD.desconectar();
 		
 	}
+	
+	/**
+	 * Método que devuelve todos los usuarios de la bd
+	 * @return lista de todos los usuarios
+	 */
+	public static ArrayList<Usuario> getTodosUsuarios() {
+		ArrayList<Usuario> ret= new ArrayList<Usuario>();
+		Statement smt= ConexionBD.conectar();
+		try {
+			ResultSet cursor = smt.executeQuery("select * from usuario");
+			while(cursor.next()) {//usamos while, porque recorre todos los usuarios de la base.
+				//antes solamente teníamos información de 1 solo usuario
+				Usuario u=new Usuario();//necesio un Usuario, porque  el select es de usuario.
+				u.email=cursor.getString("email");//no puedo llamar a this, porque sería un usuario específico.
+				u.setNombre(cursor.getString("nombre"));
+				u.setFoto(cursor.getString("foto"));
+				u.contraseña=cursor.getString("contraseña");
+				u.esPremium=cursor.getBoolean("espremium");
+				ret.add(u);			
+			}
+		} catch (SQLException e) {
+			// Aquí no debería entrar porque la consulta va a ser correcta
+			e.printStackTrace();
+		}
+		ConexionBD.desconectar();
+		return ret;
+	}
+	public String mostrarTodosUsuarios(){
+		String res="";
+		for(Usuario usuario : getTodosUsuarios()) {
+			res+=usuario+"\n";
+		}
+		return res;
+	}
 
 	/**
-	 * método que devuelve las listas de canciones de un usuario
+	 * método que devuelve las playlist de un usuario
 	 * @return ArrayList de playslist de un usuario
 	 * @throws SQLException 
 	 */
@@ -158,6 +191,14 @@ public class Usuario extends ObjetoConNombre {
 		}
 		ConexionBD.desconectar();
 		return biblioteca;
+	}
+	
+	public String mostrarPlaylist() throws SQLException{
+		String res="";
+		for(PlayList playlist : getBiblioteca()) {
+			res+=playlist;
+		}
+		return res;
 	}
 	
 	
@@ -275,12 +316,8 @@ public class Usuario extends ObjetoConNombre {
 
 	@Override
 	public String toString() {
-		return "Usuario"
-				+ "\n email=" + this.getEmail()
-				+ "\n nombre=" + this.getNombre()
-				+ "\n foto=" + this.getFoto()
-				+ "\n pass=" + "********"
-				+ "\n activo=" + this.esPremium;
+		return "Usuario | email=" + this.getEmail()+" -  nombre=" + this.getNombre()+
+				"- foto=" + this.getFoto()+"- activo=" + this.esPremium;
 	}
 
 	

@@ -10,6 +10,8 @@ import java.util.ArrayList;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
 
+import excepciones.ContraseñaIncorrectaException;
+import excepciones.UsuarioIncorrectoException;
 import utils.ConexionBD;
 
 public class PlayList extends ObjetoConNombre{
@@ -42,8 +44,9 @@ public class PlayList extends ObjetoConNombre{
 	 * @param playList id de la playlist
 	 * @return 
 	 * @throws SQLException 
+	 * @throws UsuarioIncorrectoException 
 	 */
-	public void añadirCancion(Cancion cancion, PlayList playList, Artista usuario) throws SQLException{
+	public void añadirCancion(Cancion cancion, PlayList playList, Artista usuario) throws SQLException, UsuarioIncorrectoException{
 		//insert into almacenacanciones values('cancion1', 'miplaylist', 'juan@juan');
 		Statement smt = ConexionBD.conectar();
 		Cancion c = new Cancion();
@@ -90,12 +93,14 @@ public class PlayList extends ObjetoConNombre{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ContraseñaIncorrectaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		ConexionBD.desconectar();
 		return canciones;
 		
 	}
-
 
 	public Usuario getUsuario() {
 		return usuario;
@@ -111,6 +116,12 @@ public class PlayList extends ObjetoConNombre{
 
 	public void setFechaCreacion(LocalDateTime fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
+	}
+	
+	@Override
+	public String toString() {
+		return "Playlist | foto=" + this.getFoto()+" -  nombre=" + this.getNombre()+
+				"- usuario " + this.getUsuario().email+"- fecha creacion" + this.getFechaCreacion();
 	}
 
 	

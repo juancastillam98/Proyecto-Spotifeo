@@ -25,13 +25,13 @@ import clases.PlayList;
 import clases.Usuario;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.NombreInvalidoException;
+import funciones.FicheroDatosUsuario;
 import interfacesGraficas.Ventana;
 import utils.ConexionBD;
 
 public class Principal {
 
 	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
-		
 		//ARGUMENTOS
 		String contraseñaDefault=null;
 		String emailDefault=null;
@@ -48,12 +48,10 @@ public class Principal {
 						+"\nArgumentos posibles"
 						+"\n\t-email establece el email del usuario"
 						+"\n\t-contraseña establece la contraseña usuario");
-			//salir del break
 				System.exit(0);
 			}
 		}
 
-		
 		if(emailDefault!=null) {//si hay email
 			System.out.println("Recibido por argumentos " + emailDefault);
 		}
@@ -61,12 +59,55 @@ public class Principal {
 			System.out.println("Recibido por argumentos " + contraseñaDefault);
 		}
 		
-		
 		//HASTA AQUI
 		
 		Ventana ventana = new Ventana(args);
 		
-	
+		Usuario pruebaUsuario=new Usuario();
+		Artista pruebaArtista = new Artista();
+		PlayList pruebaPlayList = new PlayList();
+		
+		//LISTAR TODOS LOS USUARIOS DE LA BASE DE DATOS
+		System.out.println("LISTAR USUARIOS DE LA BASE DE DATOS");
+		ArrayList<Usuario> listarUsuarios=pruebaUsuario.getTodosUsuarios();
+		String resListarUsuario="";
+		for (Usuario usuario : listarUsuarios) {
+			resListarUsuario+=usuario+"\n";
+		}
+		System.out.println(resListarUsuario);
+		
+		System.out.println("Forma 2:");
+		System.out.println(pruebaUsuario.mostrarTodosUsuarios());
+		System.out.println("---------------------------------------------------\n");
+		
+		
+		System.out.println("LISTAR DATOS DEL USUARIO DESDE UN FICHERO");
+		FicheroDatosUsuario.leerDatos();
+		//System.out.println(FicheroDatosUsuario.leerDatos());
+		System.out.println("---------------------------------------------------\n");
+		
+		
+		//LISTAR TODOS LOS ARTISTAS DE LA BASE DE DATOS ---HE hecho polimorfismo
+		System.out.println("LISTAR ARTISTAS DE LA BASE DE DATOS");
+		ArrayList<Usuario> listarArtista=pruebaArtista.getTodosArtistas();
+		String resListarArtista="";
+		for (Usuario artista : listarArtista) {
+			resListarArtista+=artista+"\n";
+		}
+		System.out.println(resListarArtista);
+		
+		System.out.println("Forma 2:");
+		System.out.println(pruebaArtista.mostrarTodosArtistas());
+		
+		System.out.println("LISTAR ESTILOS DE MUSICA");//ver con miguel
+		System.out.println("---------------------------------------------------\n");
+		
+		
+		System.out.println("LISTAR TODAS LAS PLAYLIST / BIBLIOTECA DE UN USUARIO");//LO QUE viene a ser una getBIBLIOTECA
+		ArrayList<PlayList> listaDePlaylist = pruebaUsuario.getBiblioteca();
+		System.out.println(pruebaUsuario.getBiblioteca());
+		//todo, listar todas las canciones de un usuario
+		
 		/*
 		
 		Blob imagenBlob=null;

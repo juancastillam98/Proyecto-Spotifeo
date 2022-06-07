@@ -2,6 +2,8 @@ package interfacesGraficas;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
@@ -11,6 +13,7 @@ public class PantallaInicio extends JPanel{
 	
 	public PantallaInicio(Ventana ventana) {
 		setLayout(new BorderLayout(0, 0));
+		ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
 		JLabel barraLateral = new JLabel("Hola feo");
 		barraLateral.setHorizontalAlignment(SwingConstants.LEFT);
