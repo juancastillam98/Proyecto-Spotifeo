@@ -13,7 +13,6 @@ import excepciones.UsuarioYaExiste;
 import utils.ConexionBD;
 
 public class Artista extends Usuario{
-	private ArrayList<PlayList> discografía;
 	public Artista() {
 		// TODO Auto-generated constructor stub
 	}
@@ -26,33 +25,26 @@ public class Artista extends Usuario{
 	 * @param foto foto del artista
 	 * @param contraseña contraseña del artista
 	 * @param esPremium true si es premium, false en caso contrario
-	 * @param discografía discografía del artista
 	 * @throws SQLException
 	 * @throws NombreInvalidoException
 	 * @throws ContraseñaIncorrectaException
 	 * @throws UsuarioYaExiste
 	 */
-	public Artista(String email, String nombre,  String foto, String contraseña, Boolean esPremium,  ArrayList<PlayList> discografía) 
+	public Artista(String email, String nombre,  String foto, String contraseña, Boolean esPremium) 
 			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException, UsuarioYaExiste {
 		super(email, nombre, foto, contraseña, esPremium);
-		this.discografía=new ArrayList<PlayList>();
 		
-		String ret="";
-		for (PlayList lc : discografía) {
-			ret+=lc+"\n";
-		}
-		
+
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
 				"insert into artista values ('"+email+"','"+nombre+"','"+foto+"','"
-						+contraseña+"', "+esPremium+", '"+ret+"')"
+						+contraseña+"', "+esPremium+")"
 				)>0) {
 			this.setEmail(email);
 			this.setNombre(nombre);
 			this.setFoto(foto);
 			this.setContraseña(contraseña);
 			this.setesPremium(esPremium);
-			this.discografía=discografía;
 			
 		}else {
 			ConexionBD.desconectar();
@@ -60,7 +52,6 @@ public class Artista extends Usuario{
 		}
 		ConexionBD.desconectar();
 		
-		this.discografía = new ArrayList<PlayList>();
 	}
 	
 	/**
@@ -78,7 +69,6 @@ public class Artista extends Usuario{
 			this.setFoto(consulta.getString("foto"));
 			this.setContraseña(consulta.getString("contraseña"));
 			this.setesPremium(consulta.getBoolean("espremium"));
-			this.setDiscografía((ArrayList<PlayList>) consulta.getArray("discografica"));
 		}else {
 			ConexionBD.desconectar();
 			//throw new UsuarioNoExisteException("No existe el mail en la BD");
@@ -104,7 +94,6 @@ public class Artista extends Usuario{
 				u.setFoto(cursor.getString("foto"));
 				u.contraseña=cursor.getString("contraseña");
 				u.esPremium=cursor.getBoolean("espremium");
-				ret.add(u);			
 			}
 		} catch (SQLException e) {
 			// Aquí no debería entrar porque la consulta va a ser correcta
@@ -121,9 +110,14 @@ public class Artista extends Usuario{
 		return res;
 	}
 	
-	public ArrayList<PlayList> getDiscografía() throws SQLException, UsuarioIncorrectoException {
+	/**
+	 * método que devuelve las discografías / albumes de un artista
+	 * @return ArrayList de playslist de un usuario
+	 * @throws SQLException 
+	 * @throws ContraseñaIncorrectaException 
+	 */
+	public ArrayList<PlayList> getDiscografía() throws SQLException {
 		ArrayList<PlayList> discografia=new ArrayList<PlayList>();
-		 //Aqui lo que hay que hacer es un select de playslist where usuario = this.email
 		Statement smt = ConexionBD.conectar();
 			
 			ResultSet consulta = smt.executeQuery("select * from playlist where artista_email = '"+this.getEmail()+"'");
@@ -132,7 +126,12 @@ public class Artista extends Usuario{
 				listas.setFoto(consulta.getString("foto"));
 				listas.fechaCreacion=consulta.getTimestamp("fechaincorporacion").toLocalDateTime();
 				listas.setNombre(consulta.getString("nombre"));
-				listas.usuario=new Usuario(consulta.getString("usuario_email"));
+				try {
+					listas.usuario=new Artista(consulta.getString("usuario_email"));
+				} catch (SQLException | ContraseñaIncorrectaException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				discografia.add(listas);
 			}
 			ConexionBD.desconectar();
@@ -140,11 +139,6 @@ public class Artista extends Usuario{
 			return discografia;
 	}
 	
-	
-
-	public void setDiscografía(ArrayList<PlayList> discografía) {
-		this.discografía = discografía;
-	}
 	
 	@Override
 	public String toString() {

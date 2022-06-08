@@ -1,6 +1,7 @@
 package clases;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Blob;
@@ -23,12 +24,16 @@ public class ObjetoConSonido extends ObjetoConNombre{
 	 * @param foto
 	 * @param ruta
 	 */
-	public ObjetoConSonido(String nombre, String foto, String ruta) {
-		super(nombre, foto);
+	//antes era String nombre
+	
+	/*
+	public ObjetoConSonido(Cancion nombre, String foto, String ruta) {
+		super();
 		this.ruta=ruta;
 		//reproducir
 		try {
-			FileInputStream cancionAReproducir = new FileInputStream(ruta);
+			ruta="./musica";
+			FileInputStream cancionAReproducir = new FileInputStream(ruta+"/"+nombre.getNombre());
 			this.reproducirCancion = new Player(cancionAReproducir);
 			this.reproducirCancion.play();//si le pongo el play aqui se va a reproducir de manera automática
 			
@@ -41,8 +46,26 @@ public class ObjetoConSonido extends ObjetoConNombre{
 		}
 		
 		};
-	
-
+*/
+	public ObjetoConSonido(Cancion nombre, String foto, String ruta) {
+		super();
+		ruta="./musica";
+		
+		try {
+			Player player;
+			FileInputStream cancionAReproducir = new FileInputStream(ruta+"/"+nombre.getNombre());
+			BufferedInputStream bis = new BufferedInputStream(cancionAReproducir);
+			player=new Player(bis);
+			player.play();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JavaLayerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		};
 	public Player getReproducirCancion() {
 		return reproducirCancion;
 	}

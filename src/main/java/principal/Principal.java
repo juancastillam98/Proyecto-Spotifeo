@@ -25,7 +25,11 @@ import clases.PlayList;
 import clases.Usuario;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.NombreInvalidoException;
+import excepciones.UsuarioIncorrectoException;
+import excepciones.UsuarioYaExiste;
 import funciones.FicheroDatosUsuario;
+import hilos.Musica;
+import hilos.MusicaReproducir;
 import interfacesGraficas.Ventana;
 import utils.ConexionBD;
 
@@ -61,11 +65,12 @@ public class Principal {
 		
 		//HASTA AQUI
 		
-		Ventana ventana = new Ventana(args);
+		//Ventana ventana = new Ventana(args);
 		
 		Usuario pruebaUsuario=new Usuario();
 		Artista pruebaArtista = new Artista();
 		PlayList pruebaPlayList = new PlayList();
+		Cancion pruebaCancion = new Cancion();
 		
 		//LISTAR TODOS LOS USUARIOS DE LA BASE DE DATOS
 		System.out.println("LISTAR USUARIOS DE LA BASE DE DATOS");
@@ -100,13 +105,44 @@ public class Principal {
 		System.out.println(pruebaArtista.mostrarTodosArtistas());
 		
 		System.out.println("LISTAR ESTILOS DE MUSICA");//ver con miguel
+		//TODO
+		System.out.println("pendiente");
 		System.out.println("---------------------------------------------------\n");
+		
 		
 		
 		System.out.println("LISTAR TODAS LAS PLAYLIST / BIBLIOTECA DE UN USUARIO");//LO QUE viene a ser una getBIBLIOTECA
 		ArrayList<PlayList> listaDePlaylist = pruebaUsuario.getBiblioteca();
 		System.out.println(pruebaUsuario.getBiblioteca());
-		//todo, listar todas las canciones de un usuario
+		System.out.println("---------------------------------------------------\n");
+
+		System.out.println("LISTAR TODAS LAS DISCOGRAFÍA / ALBUM DE UN ARTISTA");//LO QUE viene a ser una getBIBLIOTECA
+		ArrayList<PlayList> listaDeDiscografias = pruebaArtista.getDiscografía();
+		System.out.println(pruebaArtista.getDiscografía());
+		System.out.println("---------------------------------------------------\n");
+	
+		System.out.println("CREAR UNA NUEVA PLAYLIST");//LO QUE viene a ser una getBIBLIOTECA
+		PlayList nuevaPlayList = new PlayList(null, "playListPrueba", pruebaUsuario, LocalDateTime.now());
+		System.out.println(pruebaUsuario.getBiblioteca());
+		System.out.println("---------------------------------------------------\n");
+		
+		System.out.println("INSERTAR UNA CANCION EN UNA PLAYLIST -- DESDE UNA PLAYLIST");//LO QUE viene a ser una getBIBLIOTECA
+		try {
+			nuevaPlayList.añadirCancion(pruebaCancion, nuevaPlayList, pruebaArtista);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UsuarioIncorrectoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("---------------------------------------------------\n");
+		
+		
+		System.out.println("REPRODUCIR UNA CANCION");
+		MusicaReproducir reproduceCancion = new MusicaReproducir(pruebaCancion);//se le pasa la cancion
+		reproduceCancion.start();
+		System.out.println("---------------------------------------------------\n");
 		
 		/*
 		
@@ -168,10 +204,46 @@ public class Principal {
 			resultadoCancione+=c+"\n";
 		}
 		System.out.println(resultadoCancione);
-		
+		*/
+		/*
+		 * ASÍ FUNCIONA -- forma 1
 		ObjetoConSonido objSonido=new ObjetoConSonido(
 				"prueba", null, "./musica/Angèle - Flou (Lost Frequencies Remix).mp3");
+			
+		//forma  2
+		ObjetoConSonido objSonido=new ObjetoConSonido(
+				"Angèle - Flou (Lost Frequencies Remix).mp3", null, "./musica");
 		*/
+		//Musica musica = new Musica(new File("./musica/Angèle - Flou (Lost Frequencies Remix).mp3"));
+/*
+		Artista probando=null;
+		try {
+			 probando= new Artista("probando@gmail.com", "probando", 
+					"C:UsersASUSDesktopJuanCENECProgramacionProyectoProyecto-SpotifeofotosUsuarioHombreDefault.jpg", 
+						"juan", true);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NombreInvalidoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ContraseñaIncorrectaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (UsuarioYaExiste e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Sigue por aqui 1");
+		Cancion pruebaDeSonido=new Cancion(null, "Angèle - Flou (Lost Frequencies Remix).mp3", 
+				probando, Estilos.EDM, LocalDateTime.now(), 10, 110);
+		System.out.println("Sigue por aqui 2");
+		//ObjetoConSonido objetoConSonido=new ObjetoConSonido(pruebaDeSonido, null, "./musica");
+		//pruebaDeSonido.getReproducirCancion();
+		//ObjetoConSonido objetoConSonido = new Cancion();
+		//pruebaDeSonido.getReproducirCancion();
+		 * */
+
 	}
 
 }

@@ -23,10 +23,10 @@ public class PlayList extends ObjetoConNombre{
 	
 	public PlayList(String foto, String nombre, Usuario usuario, LocalDateTime fechaCreacion) throws SQLException {
 		super();		
-		
+		//IMPORTANTE; UN ARTISTA ES UN USUARIO
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into playlist values('"+nombre+"','"+foto+"','"+usuario.getEmail()+"','"+fechaCreacion+"')"
+				"insert into playlist values('"+foto+"','"+nombre+"','"+usuario.getEmail()+"','"+fechaCreacion+"')"
 				)>0) {
 		}
 		this.setNombre(nombre);//nombre de la lista

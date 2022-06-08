@@ -17,6 +17,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Control.Type;
 import javax.sound.sampled.Line.Info;
 
+import excepciones.UsuarioIncorrectoException;
 import javazoom.jl.player.Player;
 import utils.ConexionBD;
 
@@ -30,7 +31,17 @@ public class Cancion extends ObjetoConSonido{
 	public Cancion() {
 		// TODO Auto-generated constructor stub
 	}
-	
+	/**
+	 * Constructor que inserta una nueva cancion en la base de datos
+	 * @param foto de indicactiva de la cancion
+	 * @param nombre nombre de la cancion
+	 * @param artista artista de la cancion
+	 * @param estiloCancion estilo al que pertenece la cancion
+	 * @param fechaIncorporacion fecha en la que se inserta en la base de datos
+	 * @param duracion duracion de la canción
+	 * @param cantidadReproduccion cantidad de reproducciones que tiene
+	 * @throws SQLException
+	 */
 	public Cancion(String foto, String nombre, Artista artista, Estilos estiloCancion, 
 			LocalDateTime fechaIncorporacion, int duracion, int cantidadReproduccion) throws SQLException {
 		super();
@@ -50,6 +61,30 @@ public class Cancion extends ObjetoConSonido{
 		}else {
 			ConexionBD.desconectar();
 			throw new SQLException("No se ha podido insertar la cancion "+nombre);
+		}
+		ConexionBD.desconectar();
+	}
+	/**
+	 * Método que añade una canción a una playlist
+	 * @param cancion
+	 * @param playList
+	 * @param usuario
+	 * @throws SQLException
+	 * @throws UsuarioIncorrectoException
+	 */
+	public void añadirCancionAPlaylist(Cancion cancion, PlayList playList, Artista usuario) throws SQLException, UsuarioIncorrectoException{
+		//insert into almacenacanciones values('cancion1', 'miplaylist', 'juan@juan');
+		Statement smt = ConexionBD.conectar();
+		PlayList p = new PlayList();
+		if(smt.executeUpdate(
+				"insert into almacenacanciones values('"+cancion+"','"+playList+"','"+usuario.getEmail()+"')"
+				)>0) {
+			this.setNombre(cancion.getNombre());
+			p.setNombre(playList.getNombre());
+			p.usuario=new Usuario(usuario.getEmail());
+		}else {
+			ConexionBD.desconectar();
+			throw new SQLException("No se ha podido insertar en la lista");
 		}
 		ConexionBD.desconectar();
 	}
@@ -147,8 +182,6 @@ public class Cancion extends ObjetoConSonido{
 			throw new SQLException("No se ha podido actualizar la cantidad de reproducciones de la cancion");
 		}
 		ConexionBD.desconectar();
-		
-		
 	}
 
 	@Override
