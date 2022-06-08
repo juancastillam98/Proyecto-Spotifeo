@@ -140,6 +140,7 @@ public class Principal {
 		
 		
 		System.out.println("REPRODUCIR UNA CANCION");
+		
 		MusicaReproducir reproduceCancion = new MusicaReproducir(pruebaCancion);//se le pasa la cancion
 		reproduceCancion.start();
 		System.out.println("---------------------------------------------------\n");

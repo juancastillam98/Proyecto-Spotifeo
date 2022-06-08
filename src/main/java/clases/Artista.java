@@ -76,7 +76,6 @@ public class Artista extends Usuario{
 		}
 		ConexionBD.desconectar();
 	}
-	
 	/**
 	 * Método que devuelve todos los artistas de la bd
 	 * @return lista de todos los usuarios

@@ -77,7 +77,7 @@ public class Usuario extends ObjetoConNombre {
 	/**
 	 * Constructor que que nos devulve información del usuario de la bd
 	 * 
-	 * @param email      email del usuario
+	 * @param email email del usuario
 	 * @param contraseña password del usuario
 	 * @throws SQLException
 	 * @throws ContraseñaIncorrectaException 

@@ -25,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.sql.SQLException;
+import java.util.Queue;
 
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
@@ -36,7 +37,7 @@ public class PantallaLogin extends JPanel{
 	private JPasswordField introducirContraseña;
 	
 	public PantallaLogin(Ventana v, final String[] args) {
-		
+				
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 143, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 15, 5, 0, 0, 10, 0, 10, 0, 0, 0};
@@ -147,9 +148,8 @@ public class PantallaLogin extends JPanel{
 					JOptionPane.showMessageDialog(ventana, "Bienvenid@"+ventana.usuarioLogueado.getNombre()
 					,"Inicio de sesion correcto",
 					JOptionPane.INFORMATION_MESSAGE);
-					File carpeta=null;
-					FicheroDatosUsuario.obtenerDatosUsuario(email, contraseña);
-					ventana.irAPantalla("inicio");
+					FicheroDatosUsuario.añadirDatosFicheros(email);
+					ventana.irAPantalla("inicio",email);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				} catch (ContraseñaIncorrectaException e1) {
@@ -170,7 +170,7 @@ public class PantallaLogin extends JPanel{
 		botonRegistrarse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ventana.irAPantalla("registro");
+				ventana.irAPantalla("registro","");
 			}
 		});
 		

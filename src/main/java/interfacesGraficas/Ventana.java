@@ -49,7 +49,7 @@ public class Ventana extends JFrame{
 	*/
 	
 	
-	public void irAPantalla(String nombrePantalla) {
+	public void irAPantalla(String nombrePantalla, String email) {
 		this.pantallaActual.setVisible(false);
 		this.pantallaActual=null;//cada vez que cambie de pantalla, la pongo en null
 		switch (nombrePantalla) {//en función del nombre que escriba, me redirigirá a una página u otra
@@ -57,7 +57,7 @@ public class Ventana extends JFrame{
 				this.pantallaActual=new PantallaLogin(this, this.getArgs());
 				break;
 			case "inicio":
-				this.pantallaActual=new PantallaInicio(this);
+				this.pantallaActual=new PantallaInicio(this, email);
 				break;
 			case "registro":
 				this.pantallaActual=new PantallaRegistro(this);

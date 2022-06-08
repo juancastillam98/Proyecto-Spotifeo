@@ -14,8 +14,11 @@ import javax.swing.SwingConstants;
 import clases.Usuario;
 import componentesVisuales.BotonNegro;
 import excepciones.ContraseñaIncorrectaException;
+import excepciones.EmailInvalidoException;
 import excepciones.NombreInvalidoException;
+import excepciones.UsuarioIncorrectoException;
 import excepciones.UsuarioYaExiste;
+import funciones.FicheroDatosUsuario;
 
 import javax.swing.JPasswordField;
 import javax.swing.ButtonGroup;
@@ -181,6 +184,12 @@ public class PantallaRegistro extends JPanel{
 		add(botonRegistrarse, gbc_botonRegistrarse);
 		
 		
+		//si has escogido pop.
+		//te vas a una funcionone, que agrupe las canciones cuyo estilo sea pop
+		
+		//si has escogido rap.
+		//te vas a una funcionone, que agrupe las canciones cuyo estilo sea rap
+		
 		/************ LISTENERS **********/
 		ventana=v;
 		
@@ -194,14 +203,16 @@ public class PantallaRegistro extends JPanel{
 				String foto="./fotos/UsuarioHombreDefault.jpg";
 				Boolean esPremium=false;
 				if(radioSiEsPremium.isSelected()) {
-					esPremium=true;
+					// string estilo = pop
+					esPremium=true; //lamarias al funcion que agrupa las canciones .Funcines.agrupaPorEstilo(pop)
 				}else if (radioNoEsPremium.isSelected()) {
 					esPremium=true;
 				}
 				try {
 					new Usuario(email, nombreUsuario, foto,  contraseña, esPremium);
 					JOptionPane.showMessageDialog(ventana,"Registrado con exito","Registrado Completado", JOptionPane.PLAIN_MESSAGE);
-					ventana.irAPantalla("inicio");
+					FicheroDatosUsuario.añadirDatosFicheros(email);
+					ventana.irAPantalla("inicio", email);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(ventana, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -214,6 +225,12 @@ public class PantallaRegistro extends JPanel{
 				} catch (UsuarioYaExiste e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(ventana, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				} catch (UsuarioIncorrectoException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (EmailInvalidoException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 				
 			}
@@ -223,7 +240,7 @@ public class PantallaRegistro extends JPanel{
 				botonVolver.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						ventana.irAPantalla("login");
+						ventana.irAPantalla("login","");
 					}
 				});
 		

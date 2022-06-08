@@ -12,17 +12,62 @@ import java.awt.Insets;
 import javax.swing.SwingConstants;
 import javax.swing.JSplitPane;
 import javax.swing.border.LineBorder;
+
+import excepciones.ContraseñaIncorrectaException;
+import excepciones.EmailInvalidoException;
+import excepciones.UsuarioIncorrectoException;
+import funciones.FicheroDatosUsuario;
+import utils.ConexionBD;
+
 import java.awt.Color;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.JScrollBar;
 import javax.swing.JList;
 import javax.swing.JSeparator;
+import java.awt.SystemColor;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Queue;
+import java.awt.event.ActionEvent;
+import java.awt.FlowLayout;
 
 public class PantallaInicio extends JPanel{
 	private Ventana ventana;
 	
-	public PantallaInicio(Ventana ventana) {
+	public PantallaInicio(Ventana ventana, String email) {
+		Queue<String> datos=null;
+		try {
+			datos = FicheroDatosUsuario.obtenerDatosUsuario(email);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UsuarioIncorrectoException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (EmailInvalidoException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (ContraseñaIncorrectaException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String[] datosUsuario = new String[4];//0 email, 1 nombre, 2 foto, 3 es premium
+		byte pos=0;
+		while(!datos.isEmpty()) {
+			String actual = datos.poll();
+			datosUsuario[pos]=actual;
+			pos++;
+		}
+		System.out.println("datos usuario"+datosUsuario[3]);
+		System.out.println("despues");
 		setLayout(new BorderLayout(0, 0));
 		ventana.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		
@@ -39,13 +84,13 @@ public class PantallaInicio extends JPanel{
 		gbl_panelInformacionUsr.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelInformacionUsr.setLayout(gbl_panelInformacionUsr);
 		
-		JSeparator separator = new JSeparator();
-		GridBagConstraints gbc_separator = new GridBagConstraints();
-		gbc_separator.gridheight = 12;
-		gbc_separator.insets = new Insets(0, 15, 5, 5);
-		gbc_separator.gridx = 2;
-		gbc_separator.gridy = 0;
-		panelInformacionUsr.add(separator, gbc_separator);
+		JSeparator separatorVerticalUsr = new JSeparator();
+		GridBagConstraints gbc_separatorVerticalUsr = new GridBagConstraints();
+		gbc_separatorVerticalUsr.gridheight = 12;
+		gbc_separatorVerticalUsr.insets = new Insets(0, 15, 0, 5);
+		gbc_separatorVerticalUsr.gridx = 2;
+		gbc_separatorVerticalUsr.gridy = 0;
+		panelInformacionUsr.add(separatorVerticalUsr, gbc_separatorVerticalUsr);
 		
 		JSeparator separatorInformacionUsr = new JSeparator();
 		GridBagConstraints gbc_separatorInformacionUsr = new GridBagConstraints();
@@ -63,7 +108,7 @@ public class PantallaInicio extends JPanel{
 		gbc_labelInformacionUsr.gridy = 6;
 		panelInformacionUsr.add(labelInformacionUsr, gbc_labelInformacionUsr);
 		
-		JLabel labelFotoUsr = new JLabel("foto");
+		JLabel labelFotoUsr = new JLabel("foto: "+datosUsuario[2]);
 		labelFotoUsr.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		GridBagConstraints gbc_labelFotoUsr = new GridBagConstraints();
 		gbc_labelFotoUsr.insets = new Insets(0, 0, 5, 5);
@@ -71,37 +116,83 @@ public class PantallaInicio extends JPanel{
 		gbc_labelFotoUsr.gridy = 8;
 		panelInformacionUsr.add(labelFotoUsr, gbc_labelFotoUsr);
 		
-		JLabel labelNombreUsr = new JLabel("Usuario: ");
-		labelNombreUsr.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-		GridBagConstraints gbc_labelNombreUsr = new GridBagConstraints();
-		gbc_labelNombreUsr.insets = new Insets(0, 0, 5, 5);
-		gbc_labelNombreUsr.gridx = 3;
-		gbc_labelNombreUsr.gridy = 9;
-		panelInformacionUsr.add(labelNombreUsr, gbc_labelNombreUsr);
-		
-		JLabel labelEmailUsr = new JLabel("Email");
+		JLabel labelEmailUsr = new JLabel("Email: "+datosUsuario[0]);
 		labelEmailUsr.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		GridBagConstraints gbc_labelEmailUsr = new GridBagConstraints();
+		gbc_labelEmailUsr.anchor = GridBagConstraints.WEST;
 		gbc_labelEmailUsr.insets = new Insets(0, 0, 5, 5);
 		gbc_labelEmailUsr.gridx = 3;
-		gbc_labelEmailUsr.gridy = 10;
+		gbc_labelEmailUsr.gridy = 9;
 		panelInformacionUsr.add(labelEmailUsr, gbc_labelEmailUsr);
 		
-		JLabel labelEsPremium = new JLabel("Es Premium");
+		JLabel labelNombreUsr = new JLabel("Usuario: "+datosUsuario[1]);
+		labelNombreUsr.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		GridBagConstraints gbc_labelNombreUsr = new GridBagConstraints();
+		gbc_labelNombreUsr.anchor = GridBagConstraints.WEST;
+		gbc_labelNombreUsr.insets = new Insets(0, 0, 5, 5);
+		gbc_labelNombreUsr.gridx = 3;
+		gbc_labelNombreUsr.gridy = 10;
+		panelInformacionUsr.add(labelNombreUsr, gbc_labelNombreUsr);
+		
+		JLabel labelEsPremium = new JLabel("Es Premium: "+datosUsuario[3]);
 		labelEsPremium.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		GridBagConstraints gbc_labelEsPremium = new GridBagConstraints();
+		gbc_labelEsPremium.anchor = GridBagConstraints.WEST;
 		gbc_labelEsPremium.insets = new Insets(0, 0, 0, 5);
 		gbc_labelEsPremium.gridx = 3;
 		gbc_labelEsPremium.gridy = 11;
 		panelInformacionUsr.add(labelEsPremium, gbc_labelEsPremium);
 		
 		JPanel panelPlaylist = new JPanel();
+		panelPlaylist.setSize(200, 300);
+		panelPlaylist.setBounds(20, 20, 100, 300);
+		FlowLayout flowLayout = (FlowLayout) panelPlaylist.getLayout();
+		flowLayout.setHgap(15);
+		panelPlaylist.setBackground(SystemColor.controlHighlight);
 		panelIzquierdo.add(panelPlaylist, BorderLayout.SOUTH);
+		panelIzquierdo.setSize(200, 500);
+		
+
+		
 		
 		JList listaPlaylist = new JList();
 		listaPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		panelPlaylist.add(listaPlaylist);
+/*
+		//Mostrar las playlist
+		DefaultListModel listarPlaylist = new DefaultListModel();
+		JList listaPlaylist = new JList();
+		listaPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		listaPlaylist.setModel(listarPlaylist);
 		
+		FileWriter escribir=null;
+		String ret="";
+		Statement smt = ConexionBD.conectar();
+		ResultSet consulta = smt.executeQuery("select * from infoarchivos");
+		while(consulta.next()) {
+			String nombre=consulta.getString("nombre");
+			float tamanio=consulta.getFloat("tamanioMB");
+			ret=nombre +" -- "+tamanio+"MB";
+			modeloLista.addElement(ret);
+			
+			try {
+				escribir=new FileWriter("./resultado.txt", true);
+
+				escribir.write("Archivo: "+ret+" ");
+				escribir.write("\n");
+				escribir.flush();
+				escribir.close();						
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("No se  hay fichero");
+			}
+			
+		}
+		ConexionBD.desconectar();
+		
+		add(listaInfoArchivos, BorderLayout.CENTER);
+*/
+		//hasta aqui
 		
 		
 		JPanel panelSur = new JPanel();
@@ -134,26 +225,32 @@ public class PantallaInicio extends JPanel{
 		add(panelDerecho, BorderLayout.EAST);
 		GridBagLayout gbl_panelDerecho = new GridBagLayout();
 		gbl_panelDerecho.columnWidths = new int[]{15, 0, 15, 0};
-		gbl_panelDerecho.rowHeights = new int[]{19, 0, 0, 0};
+		gbl_panelDerecho.rowHeights = new int[]{19, 0, 0, 0, 0};
 		gbl_panelDerecho.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panelDerecho.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelDerecho.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelDerecho.setLayout(gbl_panelDerecho);
 		
-		JLabel botonAñadirPlaylist = new JLabel("A\u00F1adir Playlist");
+		JButton botonAñadirPlaylist = new JButton("A\u00F1adir Playlist");
 		botonAñadirPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		botonAñadirPlaylist.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		GridBagConstraints gbc_botonAñadirPlaylist = new GridBagConstraints();
 		gbc_botonAñadirPlaylist.insets = new Insets(0, 0, 0, 5);
-		gbc_botonAñadirPlaylist.anchor = GridBagConstraints.NORTH;
 		gbc_botonAñadirPlaylist.gridx = 1;
-		gbc_botonAñadirPlaylist.gridy = 2;
+		gbc_botonAñadirPlaylist.gridy = 3;
 		panelDerecho.add(botonAñadirPlaylist, gbc_botonAñadirPlaylist);
 		
-		JPanel panel = new JPanel();
-		add(panel, BorderLayout.CENTER);
-		
+		JPanel panelCentral = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panelCentral.getLayout();
+		flowLayout_1.setVgap(10);
+		add(panelCentral, BorderLayout.CENTER);
+		System.out.println("dimensiones" +panelCentral.getWidth() +" - "+panelCentral.getBounds());
+		System.out.println("dimensiones panelPlaylist" +panelPlaylist.getWidth() +" - "+panelPlaylist.getBounds());
 		JLabel labelResultados = new JLabel("Resultado");
 		labelResultados.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
-		panel.add(labelResultados);
+		panelCentral.add(labelResultados);
 		
 	}
 }
