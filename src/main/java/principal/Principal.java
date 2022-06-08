@@ -65,7 +65,7 @@ public class Principal {
 		
 		//HASTA AQUI
 		
-		//Ventana ventana = new Ventana(args);
+		Ventana ventana = new Ventana(args);
 		
 		Usuario pruebaUsuario=new Usuario();
 		Artista pruebaArtista = new Artista();

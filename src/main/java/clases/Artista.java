@@ -120,7 +120,7 @@ public class Artista extends Usuario{
 		ArrayList<PlayList> discografia=new ArrayList<PlayList>();
 		Statement smt = ConexionBD.conectar();
 			
-			ResultSet consulta = smt.executeQuery("select * from playlist where artista_email = '"+this.getEmail()+"'");
+			ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+this.getEmail()+"'");
 			while(consulta.next()) {
 				PlayList listas=new PlayList();
 				listas.setFoto(consulta.getString("foto"));
