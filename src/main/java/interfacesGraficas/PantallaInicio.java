@@ -13,6 +13,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JSplitPane;
 import javax.swing.border.LineBorder;
 
+import clases.PlayList;
+import clases.Usuario;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.UsuarioIncorrectoException;
@@ -35,28 +37,37 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Queue;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PantallaInicio extends JPanel{
 	private Ventana ventana;
 	
-	public PantallaInicio(Ventana ventana, String email) {
+	public PantallaInicio(Ventana ventana) {
+		PlayList playListUsrLogueado = new PlayList();
+		Usuario usrLogueado=null;
+		try {
+			usrLogueado = new Usuario(ventana.usuarioLogueado.getEmail());//el usuario lo recupero de ventana
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		} catch (UsuarioIncorrectoException e2) {
+			e2.printStackTrace();
+		}
+		
 		Queue<String> datos=null;
 		try {
-			datos = FicheroDatosUsuario.obtenerDatosUsuario(email);
+			datos = FicheroDatosUsuario.obtenerDatosUsuario(ventana.usuarioLogueado.getEmail());
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (UsuarioIncorrectoException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (EmailInvalidoException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (ContraseñaIncorrectaException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		String[] datosUsuario = new String[4];//0 email, 1 nombre, 2 foto, 3 es premium
@@ -75,10 +86,11 @@ public class PantallaInicio extends JPanel{
 		add(panelIzquierdo, BorderLayout.WEST);
 		panelIzquierdo.setLayout(new BorderLayout(0, 0));
 		
+		
 		JPanel panelInformacionUsr = new JPanel();
 		panelIzquierdo.add(panelInformacionUsr, BorderLayout.NORTH);
 		GridBagLayout gbl_panelInformacionUsr = new GridBagLayout();
-		gbl_panelInformacionUsr.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
+		gbl_panelInformacionUsr.columnWidths = new int[]{0, 0, 0, 180, 0, 0, 0};
 		gbl_panelInformacionUsr.rowHeights = new int[]{0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panelInformacionUsr.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelInformacionUsr.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
@@ -149,49 +161,42 @@ public class PantallaInicio extends JPanel{
 		FlowLayout flowLayout = (FlowLayout) panelPlaylist.getLayout();
 		flowLayout.setHgap(15);
 		panelPlaylist.setBackground(SystemColor.controlHighlight);
-		panelIzquierdo.add(panelPlaylist, BorderLayout.SOUTH);
-		panelIzquierdo.setSize(200, 500);
+		panelIzquierdo.add(panelPlaylist, BorderLayout.CENTER);
+		
 		
 
 		
 		
-		JList listaPlaylist = new JList();
-		listaPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-		panelPlaylist.add(listaPlaylist);
-/*
-		//Mostrar las playlist
-		DefaultListModel listarPlaylist = new DefaultListModel();
-		JList listaPlaylist = new JList();
-		listaPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-		listaPlaylist.setModel(listarPlaylist);
 		
-		FileWriter escribir=null;
-		String ret="";
+		
+		/**
+		 * Mostrar las playlis. Solamente quiero saber el nombre
+		 */
+		final JList listaPlaylist = new JList();
+		listaPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		DefaultListModel modeloListaPlaylist = new DefaultListModel();
+		listaPlaylist.setModel(modeloListaPlaylist);
+		
+		/*ArrayList<PlayList> playlistUsuario=null;
+		for (PlayList playList : playlistUsuario) {
+			modeloListaPlaylist.addElement(playList+"\n");
+		}*/
 		Statement smt = ConexionBD.conectar();
-		ResultSet consulta = smt.executeQuery("select * from infoarchivos");
-		while(consulta.next()) {
-			String nombre=consulta.getString("nombre");
-			float tamanio=consulta.getFloat("tamanioMB");
-			ret=nombre +" -- "+tamanio+"MB";
-			modeloLista.addElement(ret);
-			
-			try {
-				escribir=new FileWriter("./resultado.txt", true);
-
-				escribir.write("Archivo: "+ret+" ");
-				escribir.write("\n");
-				escribir.flush();
-				escribir.close();						
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.err.println("No se  hay fichero");
-			}
-			
-		}
-		ConexionBD.desconectar();
 		
-		add(listaInfoArchivos, BorderLayout.CENTER);
-*/
+		try {
+			ResultSet consulta = smt.executeQuery("select nombre from playlist where usuario_email = '"+ventana.usuarioLogueado.getEmail()+"'");
+			while(consulta.next()) {
+				String nombre=consulta.getString("nombre");
+				modeloListaPlaylist.addElement(nombre);
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		ConexionBD.desconectar();
+		panelPlaylist.add(listaPlaylist);
+
 		//hasta aqui
 		
 		
@@ -243,14 +248,60 @@ public class PantallaInicio extends JPanel{
 		panelDerecho.add(botonAñadirPlaylist, gbc_botonAñadirPlaylist);
 		
 		JPanel panelCentral = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) panelCentral.getLayout();
-		flowLayout_1.setVgap(10);
 		add(panelCentral, BorderLayout.CENTER);
 		System.out.println("dimensiones" +panelCentral.getWidth() +" - "+panelCentral.getBounds());
 		System.out.println("dimensiones panelPlaylist" +panelPlaylist.getWidth() +" - "+panelPlaylist.getBounds());
+		GridBagLayout gbl_panelCentral = new GridBagLayout();
+		gbl_panelCentral.columnWidths = new int[]{109, 88, 0};
+		gbl_panelCentral.rowHeights = new int[]{24, 0, 0, 0, 0};
+		gbl_panelCentral.columnWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelCentral.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		panelCentral.setLayout(gbl_panelCentral);
 		JLabel labelResultados = new JLabel("Resultado");
 		labelResultados.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
-		panelCentral.add(labelResultados);
+		GridBagConstraints gbc_labelResultados = new GridBagConstraints();
+		gbc_labelResultados.insets = new Insets(0, 0, 5, 0);
+		gbc_labelResultados.anchor = GridBagConstraints.NORTHWEST;
+		gbc_labelResultados.gridx = 1;
+		gbc_labelResultados.gridy = 0;
+		panelCentral.add(labelResultados, gbc_labelResultados);
+		
+		JButton btnSeleccionarPlaylist = new JButton("seleccionar");
+		
+		btnSeleccionarPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		GridBagConstraints gbc_btnSeleccionarPlaylist = new GridBagConstraints();
+		gbc_btnSeleccionarPlaylist.insets = new Insets(0, 0, 5, 5);
+		gbc_btnSeleccionarPlaylist.gridx = 0;
+		gbc_btnSeleccionarPlaylist.gridy = 2;
+		panelCentral.add(btnSeleccionarPlaylist, gbc_btnSeleccionarPlaylist);
+		
+		final JLabel labelPlaylistSeleccionada = new JLabel("Seleccionada");
+		labelPlaylistSeleccionada.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+		GridBagConstraints gbc_labelPlaylistSeleccionada = new GridBagConstraints();
+		gbc_labelPlaylistSeleccionada.insets = new Insets(0, 0, 0, 5);
+		gbc_labelPlaylistSeleccionada.gridx = 0;
+		gbc_labelPlaylistSeleccionada.gridy = 3;
+		panelCentral.add(labelPlaylistSeleccionada, gbc_labelPlaylistSeleccionada);
+		
+		
+		/**
+		 * LISTENERS
+		 */
+		btnSeleccionarPlaylist.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
+		//Click en un elemento de una playlist
+		listaPlaylist.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String listaSeleccionada;
+				listaSeleccionada=listaPlaylist.getSelectedValue().toString();
+				labelPlaylistSeleccionada.setText(listaSeleccionada);
+			}
+		});
 		
 	}
 }

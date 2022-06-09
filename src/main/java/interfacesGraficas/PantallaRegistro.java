@@ -212,7 +212,7 @@ public class PantallaRegistro extends JPanel{
 					new Usuario(email, nombreUsuario, foto,  contraseña, esPremium);
 					JOptionPane.showMessageDialog(ventana,"Registrado con exito","Registrado Completado", JOptionPane.PLAIN_MESSAGE);
 					FicheroDatosUsuario.añadirDatosFicheros(email);
-					ventana.irAPantalla("inicio", email);
+					ventana.irAPantalla("inicio");
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(ventana, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -240,7 +240,15 @@ public class PantallaRegistro extends JPanel{
 				botonVolver.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						ventana.irAPantalla("login","");
+						try {
+							ventana.irAPantalla("login");
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (UsuarioIncorrectoException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					}
 				});
 		

@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -67,6 +68,8 @@ public class Principal {
 		
 		Ventana ventana = new Ventana(args);
 		
+		 // PRUEBA DE INSERCIÓN 
+		 
 		Usuario pruebaUsuario=new Usuario();
 		Artista pruebaArtista = new Artista();
 		PlayList pruebaPlayList = new PlayList();

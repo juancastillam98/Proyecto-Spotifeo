@@ -175,7 +175,7 @@ public class Usuario extends ObjetoConNombre {
 		 //Aqui lo que hay que hacer es un select de playslist where usuario = this.email
 		Statement smt = ConexionBD.conectar();
 		try {	
-			ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+this.email+"'");
+			ResultSet consulta = smt.executeQuery("select nombre from playlist where usuario_email = '"+this.email+"'");
 			while(consulta.next()) {
 				PlayList listas=new PlayList();
 				listas.setFoto(consulta.getString("foto"));
@@ -187,6 +187,7 @@ public class Usuario extends ObjetoConNombre {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (UsuarioIncorrectoException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ConexionBD.desconectar();

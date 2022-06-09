@@ -85,7 +85,14 @@ public class FicheroDatosUsuario {
 		
 	}
 		
-
+/**
+ * Método que guarda en un fichero .txt (datosUsuario.txt) los datos de usuario.
+ * @param carpeta ruta donde se inseratarán
+ * @param email email del usuario
+ * @param nombre nombre del usuario
+ * @param foto foto del usuario
+ * @param esPremium true en caso de sí, False en caso contrario
+ */
 	public static void insertarDatosEnFichero(File carpeta, String email, String nombre, String foto, Boolean esPremium) {
 		try {
 			FileWriter escribir = new FileWriter("./datosUsuario.txt");

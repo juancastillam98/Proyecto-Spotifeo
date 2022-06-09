@@ -149,7 +149,7 @@ public class PantallaLogin extends JPanel{
 					,"Inicio de sesion correcto",
 					JOptionPane.INFORMATION_MESSAGE);
 					FicheroDatosUsuario.añadirDatosFicheros(email);
-					ventana.irAPantalla("inicio",email);
+					ventana.irAPantalla("inicio");
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				} catch (ContraseñaIncorrectaException e1) {
@@ -170,7 +170,15 @@ public class PantallaLogin extends JPanel{
 		botonRegistrarse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ventana.irAPantalla("registro","");
+				try {
+					ventana.irAPantalla("registro");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (UsuarioIncorrectoException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		

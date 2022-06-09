@@ -1,18 +1,21 @@
 package interfacesGraficas;
 
 import java.awt.Cursor;
+import java.sql.SQLException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import clases.Usuario;
+import excepciones.UsuarioIncorrectoException;
 
 public class Ventana extends JFrame{
 	
 	protected Usuario usuarioLogueado;
 	private JPanel pantallaActual;
 	private String[] args;
+	
 	public Ventana(String[] args) {
 		this.setSize(600, 500);
 		this.setTitle("Spotifeo");
@@ -46,10 +49,12 @@ public class Ventana extends JFrame{
 		this.pantalla.get(nombrePantalla).setVisible(true);//la pantalla que queremos mostrar, la ponemos visible
 		this.setContentPane(this.pantalla.get(nombrePantalla));
 	}
+	 * @throws UsuarioIncorrectoException 
+	 * @throws SQLException 
 	*/
 	
 	
-	public void irAPantalla(String nombrePantalla, String email) {
+	public void irAPantalla(String nombrePantalla) throws SQLException, UsuarioIncorrectoException {
 		this.pantallaActual.setVisible(false);
 		this.pantallaActual=null;//cada vez que cambie de pantalla, la pongo en null
 		switch (nombrePantalla) {//en función del nombre que escriba, me redirigirá a una página u otra
@@ -57,7 +62,7 @@ public class Ventana extends JFrame{
 				this.pantallaActual=new PantallaLogin(this, this.getArgs());
 				break;
 			case "inicio":
-				this.pantallaActual=new PantallaInicio(this, email);
+				this.pantallaActual=new PantallaInicio(this);
 				break;
 			case "registro":
 				this.pantallaActual=new PantallaRegistro(this);

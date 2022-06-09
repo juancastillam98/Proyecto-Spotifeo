@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.print.attribute.standard.DateTimeAtCompleted;
@@ -21,12 +22,17 @@ public class PlayList extends ObjetoConNombre{
 	//en el dao, usuario es el nombre de usuario
 	public PlayList() {	}
 	
+	/**
+	 * Formato de inserción de fechas en la base de datos
+	 */
+	DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("YYYY/MM/dd HH:mm:ss");
+	
 	public PlayList(String foto, String nombre, Usuario usuario, LocalDateTime fechaCreacion) throws SQLException {
 		super();		
 		//IMPORTANTE; UN ARTISTA ES UN USUARIO
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into playlist values('"+foto+"','"+nombre+"','"+usuario.getEmail()+"','"+fechaCreacion+"')"
+				"insert into playlist values('"+foto+"','"+nombre+"','"+usuario.getEmail()+"','"+fechaCreacion.format(formatoFechaHora)+"')"
 				)>0) {
 		}
 		this.setNombre(nombre);//nombre de la lista

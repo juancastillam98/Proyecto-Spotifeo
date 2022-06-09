@@ -6,6 +6,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import javax.sound.sampled.AudioFormat;
@@ -31,6 +32,8 @@ public class Cancion extends ObjetoConSonido{
 	public Cancion() {
 		// TODO Auto-generated constructor stub
 	}
+	
+	DateTimeFormatter formatoFechaHora = DateTimeFormatter.ofPattern("YYYY/MM/dd HH:mm:ss");
 	/**
 	 * Constructor que inserta una nueva cancion en la base de datos
 	 * @param foto de indicactiva de la cancion
@@ -49,7 +52,7 @@ public class Cancion extends ObjetoConSonido{
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
 				"insert into cancion values ('"+foto+"','"+nombre+"','"+artista.getEmail()+"','"+estiloCancion+"',"
-						+ "'"+fechaIncorporacion+"',"+duracion+","+cantidadReproduccion+")"				
+						+ "'"+fechaIncorporacion.format(formatoFechaHora)+"',"+duracion+","+cantidadReproduccion+")"				
 				)>0) {
 			this.setFoto(foto);
 			this.setNombre(nombre);
