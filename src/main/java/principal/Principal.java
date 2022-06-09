@@ -29,7 +29,6 @@ import excepciones.NombreInvalidoException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.UsuarioYaExiste;
 import funciones.FicheroDatosUsuario;
-import hilos.Musica;
 import hilos.MusicaReproducir;
 import interfacesGraficas.Ventana;
 import utils.ConexionBD;
@@ -64,8 +63,40 @@ public class Principal {
 			System.out.println("Recibido por argumentos " + contraseñaDefault);
 		}
 		
+		
 		//HASTA AQUI
 		
+		//Musica musica = new Musica(new File("./musica/Angèle - Flou (Lost Frequencies Remix).mp3"));
+		/*
+				Artista probando=null;
+				try {
+					 probando= new Artista("probando@gmail.com", "probando", 
+							"C:UsersASUSDesktopJuanCENECProgramacionProyectoProyecto-SpotifeofotosUsuarioHombreDefault.jpg", 
+								"juan", true);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (NombreInvalidoException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ContraseñaIncorrectaException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (UsuarioYaExiste e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Sigue por aqui 1");
+				Cancion pruebaDeSonido=new Cancion(null, "Angèle - Flou (Lost Frequencies Remix).mp3", 
+						probando, Estilos.EDM, LocalDateTime.now(), 10, 110);
+				System.out.println("Sigue por aqui 2");
+				MusicaReproducir reproducir = new MusicaReproducir(pruebaDeSonido);
+				reproducir.start();
+				//ObjetoConSonido objetoConSonido=new ObjetoConSonido(pruebaDeSonido, null, "./musica");
+				//pruebaDeSonido.getReproducirCancion();
+				//ObjetoConSonido objetoConSonido = new Cancion();
+				//pruebaDeSonido.getReproducirCancion();
+		*/
 		Ventana ventana = new Ventana(args);
 		
 		 // PRUEBA DE INSERCIÓN 
@@ -123,7 +154,7 @@ public class Principal {
 		ArrayList<PlayList> listaDeDiscografias = pruebaArtista.getDiscografía();
 		System.out.println(pruebaArtista.getDiscografía());
 		System.out.println("---------------------------------------------------\n");
-	
+	/*
 		System.out.println("CREAR UNA NUEVA PLAYLIST");//LO QUE viene a ser una getBIBLIOTECA
 		PlayList nuevaPlayList = new PlayList(null, "playListPrueba", pruebaUsuario, LocalDateTime.now());
 		System.out.println(pruebaUsuario.getBiblioteca());
@@ -147,7 +178,7 @@ public class Principal {
 		MusicaReproducir reproduceCancion = new MusicaReproducir(pruebaCancion);//se le pasa la cancion
 		reproduceCancion.start();
 		System.out.println("---------------------------------------------------\n");
-		
+		*/
 		/*
 		
 		Blob imagenBlob=null;
