@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -48,10 +49,12 @@ public class Cancion extends ObjetoConSonido{
 	public Cancion(String foto, String nombre, Artista artista, Estilos estiloCancion, 
 			LocalDateTime fechaIncorporacion, int duracion, int cantidadReproduccion) throws SQLException {
 		super();
-				
+		if (foto==null) {//compruebo si el campo foto está null
+			foto="./fotos/notaMusical.png";
+		}
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into cancion values ('"+foto+"','"+nombre+"','"+artista.getEmail()+"','"+estiloCancion+"',"
+				"insert into cancion values ('"+foto.replace((char) 92, '/')+"','"+nombre+"','"+artista.getEmail()+"','"+estiloCancion+"',"
 						+ "'"+fechaIncorporacion.format(formatoFechaHora)+"',"+duracion+","+cantidadReproduccion+")"				
 				)>0) {
 			this.setFoto(foto);

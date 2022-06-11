@@ -35,7 +35,7 @@ import utils.ConexionBD;
 
 public class Principal {
 
-	public static void main(String[] args) throws java.sql.SQLIntegrityConstraintViolationException, SQLException {
+	public static void main(String[] args) {
 		//ARGUMENTOS
 		String contraseñaDefault=null;
 		String emailDefault=null;
@@ -63,15 +63,15 @@ public class Principal {
 			System.out.println("Recibido por argumentos " + contraseñaDefault);
 		}
 		
-		
 		//HASTA AQUI
 		
-		//Musica musica = new Musica(new File("./musica/Angèle - Flou (Lost Frequencies Remix).mp3"));
+		
 		/*
+		//Musica musica = new Musica(new File("./musica/Angèle - Flou (Lost Frequencies Remix).mp3"));
+		 
 				Artista probando=null;
 				try {
-					 probando= new Artista("probando@gmail.com", "probando", 
-							"C:UsersASUSDesktopJuanCENECProgramacionProyectoProyecto-SpotifeofotosUsuarioHombreDefault.jpg", 
+					 probando= new Artista("probando@gmail.com", "probando", "./fotos/UsuarioHombreDefault.jpg", 
 								"juan", true);
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
@@ -100,6 +100,7 @@ public class Principal {
 		Ventana ventana = new Ventana(args);
 		
 		 // PRUEBA DE INSERCIÓN 
+		
 		 
 		Usuario pruebaUsuario=new Usuario();
 		Artista pruebaArtista = new Artista();
@@ -146,13 +147,33 @@ public class Principal {
 		
 		
 		System.out.println("LISTAR TODAS LAS PLAYLIST / BIBLIOTECA DE UN USUARIO");//LO QUE viene a ser una getBIBLIOTECA
-		ArrayList<PlayList> listaDePlaylist = pruebaUsuario.getBiblioteca();
-		System.out.println(pruebaUsuario.getBiblioteca());
+		try {
+			ArrayList<PlayList> listaDePlaylist = pruebaUsuario.getBiblioteca();
+		} catch (SQLException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		try {
+			System.out.println(pruebaUsuario.getBiblioteca());
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		System.out.println("---------------------------------------------------\n");
 
 		System.out.println("LISTAR TODAS LAS DISCOGRAFÍA / ALBUM DE UN ARTISTA");//LO QUE viene a ser una getBIBLIOTECA
-		ArrayList<PlayList> listaDeDiscografias = pruebaArtista.getDiscografía();
-		System.out.println(pruebaArtista.getDiscografía());
+		try {
+			ArrayList<PlayList> listaDeDiscografias = pruebaArtista.getDiscografía();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			System.out.println(pruebaArtista.getDiscografía());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("---------------------------------------------------\n");
 	/*
 		System.out.println("CREAR UNA NUEVA PLAYLIST");//LO QUE viene a ser una getBIBLIOTECA

@@ -58,7 +58,7 @@ public class Usuario extends ObjetoConNombre {
 			}
 		}
 		
-		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray+"','"
+		if (cnx.executeUpdate("insert into usuario values ('"+email+"','"+nombre+"','"+fotoArray.replace((char) 92, '/')+"','"
 				+contraseña+"', "+esPremium+")"
 				) > 0) {
 			this.email = email;
@@ -175,19 +175,16 @@ public class Usuario extends ObjetoConNombre {
 		 //Aqui lo que hay que hacer es un select de playslist where usuario = this.email
 		Statement smt = ConexionBD.conectar();
 		try {	
-			ResultSet consulta = smt.executeQuery("select nombre from playlist where usuario_email = '"+this.email+"'");
+			ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+this.email+"'");
 			while(consulta.next()) {
 				PlayList listas=new PlayList();
 				listas.setFoto(consulta.getString("foto"));
-				listas.fechaCreacion=consulta.getTimestamp("fechaincorporacion").toLocalDateTime();
 				listas.setNombre(consulta.getString("nombre"));
-				listas.usuario=new Usuario(consulta.getString("usuario_email"));
+				this.email= consulta.getString("usuario_email");
+				listas.setFechaCreacion(consulta.getTimestamp("fechaincorporacion").toLocalDateTime());
 				biblioteca.add(listas);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (UsuarioIncorrectoException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ConexionBD.desconectar();
@@ -201,6 +198,8 @@ public class Usuario extends ObjetoConNombre {
 		}
 		return res;
 	}
+	
+	
 	
 	
 	//FUNCIONES PARA PROTEGER LOS CAMPOS
@@ -304,7 +303,7 @@ public class Usuario extends ObjetoConNombre {
 	public void cambiaFoto(String foto) throws SQLException {
 		Statement smt= ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"update usuario set foto = '"+foto+"' where email='"+this.email+"'"
+				"update usuario set foto = '"+foto.replace((char) 92, '/')+"' where email='"+this.email+"'"
 				)>0) {
 			this.setFoto(foto);
 		}else {

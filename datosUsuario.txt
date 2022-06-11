@@ -1,4 +1,4 @@
 juan@juan
 juan
-C:UsersASUSDesktopJuanCENECProgramacionProyectoProyecto-SpotifeofotosUsuarioHombreDefault.jpg
+./fotos/UsuarioHombreDefault.jpg
 false

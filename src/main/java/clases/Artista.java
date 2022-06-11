@@ -37,7 +37,7 @@ public class Artista extends Usuario{
 
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into artista values ('"+email+"','"+nombre+"','"+foto+"','"
+				"insert into artista values ('"+email+"','"+nombre+"','"+foto.replace((char) 92, '/')+"','"
 						+contraseña+"', "+esPremium+")"
 				)>0) {
 			this.setEmail(email);
@@ -62,8 +62,9 @@ public class Artista extends Usuario{
 	 */
 	public Artista(String nombre) throws SQLException, ContraseñaIncorrectaException { 
 		Statement smt = ConexionBD.conectar();
-		ResultSet consulta = smt.executeQuery("select * from usuario where nombre = '"+nombre+"'");
+		ResultSet consulta = smt.executeQuery("select * from artista where nombre = '"+nombre+"'");
 		if(consulta.next()) {
+			System.out.println("contenido EMAIL artista....... "+consulta.getString("email"));
 			this.setEmail(consulta.getString("email"));
 			this.setNombre(consulta.getString("nombre"));
 			this.setFoto(consulta.getString("foto"));
