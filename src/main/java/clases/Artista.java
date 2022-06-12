@@ -6,12 +6,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import excepciones.CantidadCaracteresIncorrecta;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.NombreInvalidoException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.UsuarioYaExiste;
 import utils.ConexionBD;
-
+/**
+ * Representa al artista de una canción
+ * @author Juan
+ *
+ */
 public class Artista extends Usuario{
 	public Artista() {
 		// TODO Auto-generated constructor stub
@@ -27,25 +32,22 @@ public class Artista extends Usuario{
 	 * @param esPremium true si es premium, false en caso contrario
 	 * @throws SQLException
 	 * @throws NombreInvalidoException
-	 * @throws ContraseñaIncorrectaException
 	 * @throws UsuarioYaExiste
+	 * @throws CantidadCaracteresIncorrecta 
 	 */
 	public Artista(String email, String nombre,  String foto, String contraseña, Boolean esPremium) 
-			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException, UsuarioYaExiste {
-		super(email, nombre, foto, contraseña, esPremium);
+			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException, UsuarioYaExiste, CantidadCaracteresIncorrecta {
+		super();
 		
+		//UN ARTISTA ES UN USUARIO, LUEGO HAY QUE AÑADIR UN USUARIO Y LUEGO EL ARTISTA
+		Usuario usuario = new Usuario(email, nombre, foto, contraseña, esPremium);
 
 		Statement smt = ConexionBD.conectar();
 		if(smt.executeUpdate(
-				"insert into artista values ('"+email+"','"+nombre+"','"+foto.replace((char) 92, '/')+"','"
-						+contraseña+"', "+esPremium+")"
+				"insert into artista values ('"+usuario.getEmail()+"')"
 				)>0) {
-			this.setEmail(email);
-			this.setNombre(nombre);
-			this.setFoto(foto);
-			this.setContraseña(contraseña);
-			this.setesPremium(esPremium);
-			
+			this.email=usuario.getEmail();
+			System.out.println("contenido this "+this.email);
 		}else {
 			ConexionBD.desconectar();
 			throw new SQLException("No se ha podido conectar con la BD");
@@ -62,14 +64,13 @@ public class Artista extends Usuario{
 	 */
 	public Artista(String nombre) throws SQLException, ContraseñaIncorrectaException { 
 		Statement smt = ConexionBD.conectar();
-		ResultSet consulta = smt.executeQuery("select * from artista where nombre = '"+nombre+"'");
+		ResultSet consulta = smt.executeQuery("select * from usuario where nombre = '"+nombre+"'");
 		if(consulta.next()) {
-			System.out.println("contenido EMAIL artista....... "+consulta.getString("email"));
-			this.setEmail(consulta.getString("email"));
+			this.email=consulta.getString("email");
 			this.setNombre(consulta.getString("nombre"));
 			this.setFoto(consulta.getString("foto"));
-			this.setContraseña(consulta.getString("contraseña"));
-			this.setesPremium(consulta.getBoolean("espremium"));
+			this.contraseña=consulta.getString("contraseña");
+			this.esPremium=consulta.getBoolean("espremium");
 		}else {
 			ConexionBD.desconectar();
 			//throw new UsuarioNoExisteException("No existe el mail en la BD");
@@ -85,7 +86,7 @@ public class Artista extends Usuario{
 		ArrayList<Usuario> ret= new ArrayList<Usuario>();
 		Statement smt= ConexionBD.conectar();
 		try {
-			ResultSet cursor = smt.executeQuery("select * from artista");
+			ResultSet cursor = smt.executeQuery(" select * from usuario where email in ( select usuario_email from artista) ");
 			while(cursor.next()) {//usamos while, porque recorre todos los usuarios de la base.
 				//antes solamente teníamos información de 1 solo usuario
 				Usuario u=new Artista();//necesio un Usuario, porque  el select es de usuario.
@@ -102,6 +103,10 @@ public class Artista extends Usuario{
 		ConexionBD.desconectar();
 		return ret;
 	}
+	/**
+	 * Método que devuelve todos los artistas en formato cadena
+	 * @return todos los artistas
+	 */
 	public String mostrarTodosArtistas(){
 		String res="";
 		for(Usuario artista : getTodosArtistas()) {
@@ -138,12 +143,14 @@ public class Artista extends Usuario{
 
 			return discografia;
 	}
-	
+	/**
+	 * función toString, que muestra la información del objeto Artista
+	 * @return String con la información del artista en una línea
+	 */
 	
 	@Override
 	public String toString() {
-		return "Artista | email=" + this.getEmail()+" -  nombre=" + this.getNombre()+
-				"- foto=" + this.getFoto()+"- activo=" + this.esPremium;
+		return "Artista | foto=" + this.getFoto()+" -  nombre=" + this.getNombre();//solo me interesa la foto 
 	}
 
 	

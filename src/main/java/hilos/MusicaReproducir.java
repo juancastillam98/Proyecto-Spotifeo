@@ -15,9 +15,26 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import clases.Cancion;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
-
+/**
+ * Hilo que hace reproducir una canción
+ * @author Juan Castilla
+ */
 public class MusicaReproducir extends Thread{
+	/**
+	 * Canción a reproducir
+	 */
 	private Cancion cancion;
+/**
+ * Constructor que recibe un objeto de tipo canción
+ * @param nombre nombre del objeto de tipo Cancion
+ */
+	public MusicaReproducir(Cancion nombre) {
+		super();
+		this.cancion=nombre;
+	}
+	/**
+	 * Método que hace ejecutar el hilo
+	 */
 	public void run() {
 		// TODO Auto-generated method stub
 		super.run();
@@ -37,9 +54,6 @@ public class MusicaReproducir extends Thread{
 		}
 			
 	}
-	public MusicaReproducir(Cancion nombre) {
-		super();
-		this.cancion=nombre;
-	}
+	
 
 }

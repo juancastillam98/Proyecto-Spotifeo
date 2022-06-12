@@ -18,17 +18,37 @@ import javazoom.jl.player.*;
 import javax.sound.sampled.Control.Type;
 import javax.sound.sampled.Line.Info;
 
+/**
+ * Representa un objeto que mostrará una serie de anuncios a aquellos usuarios que no son premium
+ * @author Juan Castilla Mariscal
+ *
+ */
 public class Anuncios extends ObjetoConSonido{
+	/**
+	 * Url de destino del anuncio
+	 */
 	private String direccionAnuncio;
-	
-	public Anuncios(String nombre, BufferedImage foto, Player reproducirCancion, String direccionAnuncio) {
-		super(nombre,foto, reproducirCancion);
+	/**
+	 * Constructor de Anuncios con todos sus campos
+	 * @param nombre nombre del anuncio
+	 * @param foto foto representativa del anuncio
+	 * @param direccion url de destino del anuncio 
+	 */
+	public Anuncios(Cancion nombre, String foto, String direccion) {
+		super(nombre,foto);
 		this.direccionAnuncio = direccionAnuncio;
 	}
+	/**
+	 * Getter de dirección
+	 * @return url de destino del anuncio<
+	 */
 	public String getDireccionAnuncio() {
 		return direccionAnuncio;
 	}
-
+/**
+ * Setter de dirección.
+ * @param direccionAnuncio nueva url de destino del anuncio
+ */
 	public void setDireccionAnuncio(String direccionAnuncio) {
 		this.direccionAnuncio = direccionAnuncio;
 	}

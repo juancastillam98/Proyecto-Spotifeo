@@ -30,12 +30,29 @@ import java.util.Queue;
 import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.ImageIcon;
-
+/**
+ * Pantalla de inicio de sesión
+ * @author Juan Castilla
+ *
+ */
 public class PantallaLogin extends JPanel{
+	/**
+	 * Indica la ventana sobre la que nos encontramos
+	 */
 	private Ventana ventana;
+	/**
+	 * Campo para introducir el email del usuario
+	 */
 	private JTextField introducirEmail;
+	/**
+	 * Campo para introducir la contraseña de usuario de inicio de sesión
+	 */
 	private JPasswordField introducirContraseña;
-	
+	/**
+	 * Constructtor que crea una pantalla de login
+	 * @param v ventana de login
+	 * @param args argumentos de inicio de sesión.
+	 */
 	public PantallaLogin(Ventana v, final String[] args) {
 				
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -166,7 +183,9 @@ public class PantallaLogin extends JPanel{
 			}
 		});
 		
-		//Click en registrarse
+		/**
+		 * Evento de click en el botón de registrarse.
+		 */
 		botonRegistrarse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {

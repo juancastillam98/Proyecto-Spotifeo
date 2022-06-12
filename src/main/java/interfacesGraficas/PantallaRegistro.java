@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import clases.Usuario;
 import componentesVisuales.BotonNegro;
+import excepciones.CantidadCaracteresIncorrecta;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.NombreInvalidoException;
@@ -226,10 +227,13 @@ public class PantallaRegistro extends JPanel{
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(ventana, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				} catch (UsuarioIncorrectoException e1) {
-					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(ventana, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				} catch (EmailInvalidoException e1) {
-					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(ventana, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					e1.printStackTrace();
+				} catch (CantidadCaracteresIncorrecta e1) {
+					JOptionPane.showMessageDialog(ventana, e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 					e1.printStackTrace();
 				}
 				

@@ -8,7 +8,12 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.border.MatteBorder;
-
+/**
+ * Representa todos los botones que son negros, con texto en blanco. Y al pasar por encima de ellos,
+ * pasan a ser naranjas con el texto negro
+ * @author Juan Castilla
+ *
+ */
 public class BotonNegro extends JButton{
 	public BotonNegro(String s) {
 		super(s);
@@ -24,7 +29,9 @@ public class BotonNegro extends JButton{
 			}
 		});
 	}
-	
+	/**
+	 * método que cambia el color del botón al pasar por encima de él
+	 */
 	private void estilosPorDefecto() {//esta función, volverá a poner el boton por defecto
 		//por ejemplo, si pongo el cursor encima de un botón, y este botón cambia, cuando salga
 		//del botón, tiene que haber una función, que cambie vuela a poner el botón tal y como estaba

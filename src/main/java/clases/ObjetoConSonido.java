@@ -11,43 +11,30 @@ import javax.sound.sampled.Clip;
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
 
+/**
+ * Representan todos aquellos objetos que reproducirán sonido
+ * @author ASUS
+ *
+ */
 public class ObjetoConSonido extends ObjetoConNombre{
-
-	private Player reproducirCancion;
+	/**
+	 * Representa el reproductor de la cancion
+	 */
+	protected Player reproducirCancion;
+	/**
+	 * Representa la ruta donde se encuntra la cancion
+	 */
 	private String ruta;
 	
 	//constructor vacío
 	public ObjetoConSonido() {}
 	/**
-	 * Constructor que accede a las canciones
-	 * @param nombre
-	 * @param foto
-	 * @param ruta
+	 * Constructor de objeto con sonido con los campos de nombre y ruta
+	 * @param nombre nombre de la cancion
+	 * @param foto foto representativa de la cancion
 	 */
-	//antes era String nombre
-	
-	/*
-	public ObjetoConSonido(Cancion nombre, String foto, String ruta) {
-		super();
-		this.ruta=ruta;
-		//reproducir
-		try {
-			ruta="./musica";
-			FileInputStream cancionAReproducir = new FileInputStream(ruta+"/"+nombre.getNombre());
-			this.reproducirCancion = new Player(cancionAReproducir);
-			this.reproducirCancion.play();//si le pongo el play aqui se va a reproducir de manera automática
-			
-		} catch (FileNotFoundException e) {//no se encuentra la ruta
-			e.printStackTrace();
-			System.err.println("no se encuentra la canción en la ruta");
-		} catch (JavaLayerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		};
-*/
-	public ObjetoConSonido(Cancion nombre, String foto, String ruta) {
+
+	public ObjetoConSonido(Cancion nombre, String foto) {
 		super();
 		ruta="./musica";
 		
@@ -65,11 +52,19 @@ public class ObjetoConSonido extends ObjetoConNombre{
 			e.printStackTrace();
 		}
 		
-		};
+	};
+		
+	/**
+	 * Getter de Objeto con sonido	
+	 * @return reproduce la cancion
+	 */
 	public Player getReproducirCancion() {
 		return reproducirCancion;
 	}
-
+	/**
+	 * Setter de Objeto con sonido
+	 * @param reproducirCancion nueva cancion a reproducir
+	 */
 	public void setReproducirCancion(Player reproducirCancion) {
 		this.reproducirCancion = reproducirCancion;
 	}

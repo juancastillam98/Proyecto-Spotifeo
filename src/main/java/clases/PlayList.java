@@ -14,12 +14,24 @@ import javax.print.attribute.standard.DateTimeAtCompleted;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.UsuarioIncorrectoException;
 import utils.ConexionBD;
-
+/**
+ * Representa una playlist, o sea una lista de canciones
+ * @author Juan Castilla
+ *
+ */
 public class PlayList extends ObjetoConNombre{
-
+	/**
+	 * Indica el usuario a quien pertenece la playlist
+	 */
 	protected Usuario usuario; //usuario que lo crea, el email
+	/**
+	 * Fecha de creación de la playlist
+	 */
 	protected LocalDateTime fechaCreacion;
-	//en el dao, usuario es el nombre de usuario
+
+	/**
+	 * Constructor vacío
+	 */
 	public PlayList() {	}
 	
 	/**
@@ -115,30 +127,29 @@ public class PlayList extends ObjetoConNombre{
 					+ "join cancion on almacenacanciones.cancion_nombre = cancion.nombre"
 					+ "join artista on cancion.artista_email = artista.email"
 					+ "where almacenacanciones.playlist_nombre ='"+nombre+"'");*/
-			ResultSet cursor=smt.executeQuery("select cancion.foto, cancion.nombre, artista.nombre, cancion.estilocancion, cancion.fechaincorporacion\r\n"
+			ResultSet cursor=smt.executeQuery("select cancion.foto, almacenacanciones.cancion_nombre, usuario.nombre, "
+					+ "cancion.estilocancion, cancion.fechaincorporacion, cancion.duracion, cancion.cantidadreproducciones\r\n"
 					+ "from almacenacanciones \r\n"
-					+ "join playlist on almacenacanciones.playlist_nombre = playlist.nombre\r\n"
 					+ "join cancion on almacenacanciones.cancion_nombre = cancion.nombre\r\n"
-					+ "join artista on cancion.artista_email = artista.email\r\n"
+					+ "join usuario on cancion.artista_email = usuario.email\r\n"
 					+ "where almacenacanciones.playlist_nombre ='"+nombre+"'");
 			while(cursor.next()) {
 				Cancion cancion = new Cancion();
-				cancion.setFoto(cursor.getString("cancion.foto"));
-				cancion.setNombre(cursor.getString("cancion.nombre"));
+				cancion.setFoto(cursor.getString("foto"));
+				cancion.setNombre(cursor.getString("cancion_nombre"));
 				
-				System.out.println("contenido artista....... "+cursor.getString("artista.nombre"));
-				cancion.artista=new Artista(cursor.getString("artista.nombre"));
-				System.out.println("contenido artista....... "+cursor.getString("nombre"));
+				//System.out.println("contenido artista....... "+cursor.getString("nombre"));
 				
 				//cancion.estiloCancion = new Estilos(cursor.getString("cancion.estilocancion"));
-				cancion.estiloCancion = Estilos.valueOf(cursor.getString("estilocancion"));
+				//cancion.estiloCancion = Estilos.valueOf(cursor.getString("estilocancion"));
 				cancion.fechaIncorporacion=cursor.getTimestamp("fechaincorporacion").toLocalDateTime();
+				cancion.duracion=cursor.getInt("duracion");
+				cancion.cantidadReproduccion=cursor.getInt("cantidadreproducciones");
+				//cancion.artista=new Artista(cursor.getString("nombre"));
+				cancion.artista=(Artista) this.usuario;
 				canciones.add(cancion);
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ContraseñaIncorrectaException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -146,23 +157,39 @@ public class PlayList extends ObjetoConNombre{
 		return canciones;
 		
 	}
-
+	/**
+	 * Getter que devuelve el usuario
+	 * @return usuario a quien pertenece
+	 */
 	public Usuario getUsuario() {
 		return usuario;
 	}
+	/**
+	 * Setter de usuario
+	 * @param usuario, nuevo Usuario a quien pertence
+	 */
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-
+	/**
+	 * Getter de fecha,
+	 * @return fecha de incorporación de la cancion.
+	 */
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
 	}
-
+	/**
+	 * Setter de cancion
+	 * @param fechaCreacion nueva Fecha de incorporación de la cancion
+	 */
 	public void setFechaCreacion(LocalDateTime fechaCreacion) {
 		this.fechaCreacion = fechaCreacion;
 	}
-	
+	/**
+	 * función toString, que muestra la información de Playlist
+	 * @return String con la información del objeto cancion en una sola línea
+	 */
 	@Override
 	public String toString() {
 		return "Playlist | foto=" + this.getFoto()+" -  nombre=" + this.getNombre()+

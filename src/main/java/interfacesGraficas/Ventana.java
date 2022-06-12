@@ -9,13 +9,28 @@ import javax.swing.JPanel;
 
 import clases.Usuario;
 import excepciones.UsuarioIncorrectoException;
-
+/**
+ * Representa las ventanas sobre las que nos situaremos
+ * @author Juan Castilla
+ *
+ */
 public class Ventana extends JFrame{
-	
+	/**
+	 * Usuario logueado
+	 */
 	protected Usuario usuarioLogueado;
+	/**
+	 * Indica la pantalla donde nos encotramos actualmente
+	 */
 	private JPanel pantallaActual;
+	/**
+	 * Valores estaplecidos por argumentos
+	 */
 	private String[] args;
-	
+	/**
+	 * Constructor que crea una nueva ventana
+	 * @param args argumentos por defecto
+	 */
 	public Ventana(String[] args) {
 		this.setSize(600, 500);
 		this.setTitle("Spotifeo");
@@ -53,7 +68,12 @@ public class Ventana extends JFrame{
 	 * @throws SQLException 
 	*/
 	
-	
+	/**
+	 * Función para cambiar de pantalla
+	 * @param nombrePantalla nueva pantalla de destino
+	 * @throws SQLException
+	 * @throws UsuarioIncorrectoException
+	 */
 	public void irAPantalla(String nombrePantalla) throws SQLException, UsuarioIncorrectoException {
 		this.pantallaActual.setVisible(false);
 		this.pantallaActual=null;//cada vez que cambie de pantalla, la pongo en null

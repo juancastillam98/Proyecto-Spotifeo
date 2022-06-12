@@ -5,24 +5,41 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import excepciones.CantidadCaracteresIncorrecta;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.NombreInvalidoException;
 import excepciones.UsuarioIncorrectoException;
 import excepciones.UsuarioYaExiste;
 import utils.ConexionBD;
-
+/**
+ * Hace referencia a un usuario logueado.
+ * @author Juan Castilla
+ *
+ */
 public class Usuario extends ObjetoConNombre {
+	/**
+	 * Indica el email del artista
+	 */
 	protected String email;
+	/**
+	 * Indica si es premium o no el usuario
+	 */
 	protected Boolean esPremium;
+	/**
+	 * Referencia a la contraseña del usuario
+	 */
 	protected String contraseña;
-
+	
+	/**
+	 * Constructor vacío
+	 */
 	public Usuario() {// constructor para recorrer valores de del
 		super();
 	}
 
 	/**
-	 * Constructor que inserta datos del usuario en la bd
+	 * Constructor que inserta datos del usuario en la base de datos
 	 * 
 	 * @param nombre     del usuario
 	 * @param fotoArray  foto de perfil del usuario
@@ -31,20 +48,19 @@ public class Usuario extends ObjetoConNombre {
 	 * @param contraseña password del usuario
 	 * @throws SQLException
 	 * @throws NombreInvalidoException 
-	 * @throws ContraseñaIncorrectaException 
 	 * @throws UsuarioYaExiste 
+	 * @throws CantidadCaracteresIncorrecta 
 	 */
 	public Usuario(String email, String nombre, String fotoArray,  String contraseña, Boolean esPremium)
-			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException, UsuarioYaExiste {
+			throws SQLException, NombreInvalidoException, ContraseñaIncorrectaException, UsuarioYaExiste, CantidadCaracteresIncorrecta {
 		super(); 
 		
 		if(!nombreValido(nombre)) {//si el nombre está vacío, devuelve true (ha negado 2 veces, es lo mismo que no negar ninguna vez
 			throw new NombreInvalidoException("El nombre está vacío");
 		}
 		if (cantidadCaracteresIncorrecta(contraseña)) {
-			throw new ContraseñaIncorrectaException("La contraseña debe tener al menos 4 caracteres");
+			throw new CantidadCaracteresIncorrecta("La contraseña debe tener al menos 4 caracteres");
 		}
-		
 		
 		Statement cnx = ConexionBD.conectar();
 		
@@ -112,7 +128,7 @@ public class Usuario extends ObjetoConNombre {
 		ConexionBD.desconectar();
 	}
 	/**
-	 * Constructor que devuelve toda la información de un usuario concreto
+	 * Constructor que devuelve toda la información de un usuario concreto de la base de datos
 	 * @throws UsuarioIncorrectoException 
 	 */
 	public Usuario(String email) throws SQLException, UsuarioIncorrectoException {
@@ -132,7 +148,7 @@ public class Usuario extends ObjetoConNombre {
 	}
 	
 	/**
-	 * Método que devuelve todos los usuarios de la bd
+	 * Método que devuelve todos los usuarios de la base de datos
 	 * @return lista de todos los usuarios
 	 */
 	public static ArrayList<Usuario> getTodosUsuarios() {
@@ -157,6 +173,10 @@ public class Usuario extends ObjetoConNombre {
 		ConexionBD.desconectar();
 		return ret;
 	}
+	/**
+	 * Método que devuelve todos usuarios
+	 * @return String con toda la información de los usuarios
+	 */
 	public String mostrarTodosUsuarios(){
 		String res="";
 		for(Usuario usuario : getTodosUsuarios()) {
@@ -190,7 +210,11 @@ public class Usuario extends ObjetoConNombre {
 		ConexionBD.desconectar();
 		return biblioteca;
 	}
-	
+	/**
+	 * Método que devuelve todas las las playlist del usuarios
+	 * @return String con todas las playlist del usuario
+	 * @throws SQLException
+	 */
 	public String mostrarPlaylist() throws SQLException{
 		String res="";
 		for(PlayList playlist : getBiblioteca()) {
@@ -203,10 +227,20 @@ public class Usuario extends ObjetoConNombre {
 	
 	
 	//FUNCIONES PARA PROTEGER LOS CAMPOS
+	/**
+	 * Función que comprueba si el nombre de usuario está vacío.
+	 * @param nombre del usuario usuario
+	 * @return true si el campo está vacío, f
+	 */
 	private static boolean nombreValido(String nombre) {
 		return !nombre.isBlank();// si el nombre no está en blanco, devuelve true.
 		
 	}
+	/**
+	 * Función que comprueba la cantidad de caracteres del campo contraseña
+	 * @param pass contraseña introducida
+	 * @return true, si la contraseña tiene menos de 3 caracteres, false en caso contrario
+	 */
 	public static boolean cantidadCaracteresIncorrecta(String pass) {
 		if(pass.length()<=3) {
 			return true;
@@ -217,11 +251,18 @@ public class Usuario extends ObjetoConNombre {
 	}
 	
 	//GETTERS Y SETTERS
-	
+	/**
+	 * Getter de email
+	 * @return email del usuario
+	 */
 	public String getEmail() {
 		return email;
 	}
-
+	/**
+	 * Setter de email,
+	 * @param email nuevo email del usuario
+	 * @throws SQLException
+	 */
 	public void setEmail(String email) throws SQLException {
 		
 		Statement smt = ConexionBD.conectar();
@@ -235,11 +276,19 @@ public class Usuario extends ObjetoConNombre {
 		}
 		ConexionBD.desconectar();
 	}
-	
+	/**
+	 * Getter de contraseña
+	 * @return contraseña del usuario
+	 */
 	public String getContraseña() {
 		return contraseña;
 	}
-
+	/**
+	 * Método para actualizar la contraseña del usuario de la base de datos spotifeo
+	 * @param contraseña nueva contraseá del usuario
+	 * @throws SQLException
+	 * @throws ContraseñaIncorrectaException
+	 */
 	public void setContraseña(String contraseña) throws SQLException, ContraseñaIncorrectaException {
 		if (cantidadCaracteresIncorrecta(contraseña)) {
 			throw new ContraseñaIncorrectaException("La contraseña debe tener al menos 4 caracteres");
@@ -257,11 +306,18 @@ public class Usuario extends ObjetoConNombre {
 		ConexionBD.desconectar();
 		
 	}
-
+	/**
+	 * Getter de esPremium
+	 * @return true si el usuario es premium, false en caso contrario.
+	 */
 	public Boolean getesPremium() {
 		return esPremium;
 	}
-
+	/**
+	 *Método que actuliza el estado de es premium en la base de datos spotifeo
+	 * @param esPremium Nuevo estado de Es Premium, true o false
+	 * @throws SQLException
+	 */
 	public void setesPremium(Boolean esPremium) throws SQLException {
 		
 		Statement smt = ConexionBD.conectar();
@@ -313,7 +369,10 @@ public class Usuario extends ObjetoConNombre {
 		ConexionBD.desconectar();
 	}
 	
-
+	/**
+	 * función toString, que muestra la información del objeto Usuario
+	 * @return String con la información del objeto Usuario en una sola línea
+	 */
 	@Override
 	public String toString() {
 		return "Usuario | email=" + this.getEmail()+" -  nombre=" + this.getNombre()+

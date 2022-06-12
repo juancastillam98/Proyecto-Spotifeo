@@ -20,6 +20,9 @@ import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.UsuarioIncorrectoException;
 import funciones.FicheroDatosUsuario;
+import funciones.ReproducirCanciones;
+import hilos.MusicaReproducir;
+import interfaces.Reproductor;
 import utils.ConexionBD;
 
 import java.awt.Color;
@@ -45,11 +48,19 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
-
+/**
+ * Pantalla de menú principal de la aplicación.
+ * @param ventana
+ */
 public class PantallaInicio extends JPanel{
+	/**
+	 * Indica la ventan sobre la que nos encotramos
+	 */
 	private Ventana ventana;
-	
 	public PantallaInicio(final Ventana ventana) {
+		Reproductor reproductor;//declaro una referencia a la interface Reproductor
+		
+		
 		PlayList playListUsrLogueado = new PlayList();
 		Usuario usrLogueado=null;
 		try {
@@ -188,10 +199,7 @@ public class PantallaInicio extends JPanel{
 			ArrayList<PlayList> playlistUsuario = ventana.usuarioLogueado.getBiblioteca();
 			for (PlayList playList : playlistUsuario) {
 				modeloListaPlaylist.addElement(playList.getNombre());
-				
-				if(playList.getNombre() instanceof Object) {
-					System.out.println("es un string ");
-				}
+
 			}
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
@@ -257,31 +265,20 @@ public class PantallaInicio extends JPanel{
 		System.out.println("dimensiones" +panelCentral.getWidth() +" - "+panelCentral.getBounds());
 		System.out.println("dimensiones panelPlaylist" +panelPlaylist.getWidth() +" - "+panelPlaylist.getBounds());
 		GridBagLayout gbl_panelCentral = new GridBagLayout();
-		gbl_panelCentral.columnWidths = new int[]{30, 109, 0, 0, 30, 0};
+		gbl_panelCentral.columnWidths = new int[]{30, 109, 0, 0, 0, 30, 0};
 		gbl_panelCentral.rowHeights = new int[]{24, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panelCentral.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+		gbl_panelCentral.columnWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
 		gbl_panelCentral.rowWeights = new double[]{1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		panelCentral.setLayout(gbl_panelCentral);
 		JLabel labelResultados = new JLabel("Resultado");
 		labelResultados.setFont(new Font("Trebuchet MS", Font.PLAIN, 20));
 		GridBagConstraints gbc_labelResultados = new GridBagConstraints();
-		gbc_labelResultados.gridwidth = 3;
+		gbc_labelResultados.gridwidth = 2;
 		gbc_labelResultados.insets = new Insets(0, 0, 5, 5);
 		gbc_labelResultados.anchor = GridBagConstraints.NORTHWEST;
-		gbc_labelResultados.gridx = 1;
+		gbc_labelResultados.gridx = 2;
 		gbc_labelResultados.gridy = 0;
 		panelCentral.add(labelResultados, gbc_labelResultados);
-		
-		/**
-		 * Panel donde se mostrarán todas las canciones de una playlist
-		 */
-		final JPanel panelListarCancionesPlaylist = new JPanel();
-		GridBagConstraints gbc_panelListarCancionesPlaylist = new GridBagConstraints();
-		gbc_panelListarCancionesPlaylist.insets = new Insets(0, 0, 5, 0);
-		gbc_panelListarCancionesPlaylist.fill = GridBagConstraints.BOTH;
-		gbc_panelListarCancionesPlaylist.gridx = 4;
-		gbc_panelListarCancionesPlaylist.gridy = 0;
-		panelCentral.add(panelListarCancionesPlaylist, gbc_panelListarCancionesPlaylist);
 		
 	
 		
@@ -290,22 +287,9 @@ public class PantallaInicio extends JPanel{
 		btnSeleccionarPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		GridBagConstraints gbc_btnSeleccionarPlaylist = new GridBagConstraints();
 		gbc_btnSeleccionarPlaylist.insets = new Insets(0, 0, 5, 5);
-		gbc_btnSeleccionarPlaylist.gridx = 1;
+		gbc_btnSeleccionarPlaylist.gridx = 2;
 		gbc_btnSeleccionarPlaylist.gridy = 2;
 		panelCentral.add(btnSeleccionarPlaylist, gbc_btnSeleccionarPlaylist);
-		
-		final JLabel labelPlaylistSeleccionada = new JLabel("Seleccionada");
-		labelPlaylistSeleccionada.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
-		GridBagConstraints gbc_labelPlaylistSeleccionada = new GridBagConstraints();
-		gbc_labelPlaylistSeleccionada.insets = new Insets(0, 0, 5, 5);
-		gbc_labelPlaylistSeleccionada.gridx = 1;
-		gbc_labelPlaylistSeleccionada.gridy = 3;
-		panelCentral.add(labelPlaylistSeleccionada, gbc_labelPlaylistSeleccionada);
-		
-
-		/**
-		 * LISTENERS
-		 */
 		btnSeleccionarPlaylist.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -313,11 +297,39 @@ public class PantallaInicio extends JPanel{
 			}
 		});
 		
+		final JLabel labelPlaylistSeleccionada = new JLabel("Seleccionada");
+		labelPlaylistSeleccionada.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+		GridBagConstraints gbc_labelPlaylistSeleccionada = new GridBagConstraints();
+		gbc_labelPlaylistSeleccionada.insets = new Insets(0, 0, 5, 5);
+		gbc_labelPlaylistSeleccionada.gridx = 2;
+		gbc_labelPlaylistSeleccionada.gridy = 3;
+		panelCentral.add(labelPlaylistSeleccionada, gbc_labelPlaylistSeleccionada);
+		
 		/**
-		 * Nistrar todas las canciones que tiene una playlist al hacer click sobre una de ellas
+		 * Panel donde se mostrarán todas las canciones de una playlist
+		 */
+		final JPanel panelListarCancionesPlaylist = new JPanel();
+		GridBagConstraints gbc_panelListarCancionesPlaylist = new GridBagConstraints();
+		gbc_panelListarCancionesPlaylist.gridwidth = 4;
+		gbc_panelListarCancionesPlaylist.insets = new Insets(0, 0, 5, 5);
+		gbc_panelListarCancionesPlaylist.fill = GridBagConstraints.BOTH;
+		gbc_panelListarCancionesPlaylist.gridx = 1;
+		gbc_panelListarCancionesPlaylist.gridy = 5;
+		panelCentral.add(panelListarCancionesPlaylist, gbc_panelListarCancionesPlaylist);
+		
+		//TODO implementar el reproductor
+		final JList listaCancionesPlaylist = new JList();
+		listaCancionesPlaylist.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		
+		/**
+		 * LISTENERS
+		 */
+		
+		/**
+		 * Mosstrar todas las canciones que tiene una playlist al hacer click sobre una de ellas
 		 */
 		//Jlist donde se mostrarán todas las canciones de una playlist
-		final JList listaListarCanciones = new JList();
+		//final JList listaCancionesPlaylist = new JList();
 		
 		//Click en un elemento de una playlist
 		listaPlaylist.addMouseListener(new MouseAdapter() {
@@ -329,7 +341,7 @@ public class PantallaInicio extends JPanel{
 				PlayList lista = new PlayList();
 				//cuando haga click en una playlist
 				DefaultListModel cancionesModelo = new DefaultListModel();
-				listaListarCanciones.setModel(cancionesModelo);//añado el modelo al Jlist
+				listaCancionesPlaylist.setModel(cancionesModelo);//añado el modelo al Jlist
 				ArrayList<Cancion> todasCanciones=lista.getCancionesPlayList(listaSeleccionada);//devuelve un arraylist
 		        //System.out.println(String.valueOf(sampleObject));
 
@@ -337,13 +349,33 @@ public class PantallaInicio extends JPanel{
 					System.out.println("Cancion ---> "+cancion);
 					cancionesModelo.addElement(cancion);//añado las canciones al modelo
 				}
-				panelListarCancionesPlaylist.add(listaListarCanciones);//añado la lista, con las canciones, al panel
+				panelListarCancionesPlaylist.add(listaCancionesPlaylist);//añado la lista, con las canciones, al panel
 			}
 
+		});
+		panelListarCancionesPlaylist.add(listaCancionesPlaylist);//Panel, donde se muestran todas las canciones del JList
+
+		/***************  HACER REPRODUCIR UNA CANCIÓNN *******************
+		 * Evento al hacer click en una cancion.
+		 */
+		final Cancion cancionARperoducirBoton=null;
+		listaCancionesPlaylist.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Cancion cancionARperoducir = (Cancion) listaCancionesPlaylist.getSelectedValue();
+				cancionARperoducirBoton=cancionARperoducir;
+				ReproducirCanciones reproducirCanciones = new ReproducirCanciones();
+				reproducirCanciones.reproducir(cancionARperoducir);
+			}
 		});
 		
 		//Reproductor
 		JButton botonReproducir = new JButton("Reproducir");
+		botonReproducir.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 		botonReproducir.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		GridBagConstraints gbc_botonReproducir = new GridBagConstraints();
 		gbc_botonReproducir.insets = new Insets(0, 0, 5, 5);

@@ -19,11 +19,13 @@ import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.UsuarioIncorrectoException;
 import utils.ConexionBD;
-
+/**
+ * Genera y recorre los ficheros donde se almacenan los datos del usuario
+ * @author ASUS
+ *
+ */
 public class FicheroDatosUsuario {
-	public static void leerDatos() {
-		
-	}
+
 	/**
 	 * Función que recupera todos los datos del usuario pasados por parámetros, y los devuelve en orden de inserción
 	 * @param email email del usuario del que se desea obtener información

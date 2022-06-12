@@ -66,9 +66,9 @@ public class Principal {
 		//HASTA AQUI
 		
 		
-		/*
+		
 		//Musica musica = new Musica(new File("./musica/Angèle - Flou (Lost Frequencies Remix).mp3"));
-		 
+		 /*
 				Artista probando=null;
 				try {
 					 probando= new Artista("probando@gmail.com", "probando", "./fotos/UsuarioHombreDefault.jpg", 
@@ -86,9 +86,20 @@ public class Principal {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				//se inserta correctamente, pero no entiendo por que no se muestra
+				System.out.println("nombre --> artista "+probando.getNombre()); 
+				System.out.println("foto --> artista "+probando.getFoto());
+				System.out.println("contraseña --> artista "+probando.getContraseña());
+				System.out.println("email --> artista "+probando.getEmail());
 				System.out.println("Sigue por aqui 1");
-				Cancion pruebaDeSonido=new Cancion(null, "Angèle - Flou (Lost Frequencies Remix).mp3", 
-						probando, Estilos.EDM, LocalDateTime.now(), 10, 110);
+				Cancion pruebaDeSonido = null;
+				try {
+					pruebaDeSonido = new Cancion(null, "Angèle - Flou (Lost Frequencies Remix).mp3", 
+							probando, Estilos.EDM, LocalDateTime.now(), 10, 110);
+				} catch (SQLException e3) {
+					// TODO Auto-generated catch block
+					e3.printStackTrace();
+				}
 				System.out.println("Sigue por aqui 2");
 				MusicaReproducir reproducir = new MusicaReproducir(pruebaDeSonido);
 				reproducir.start();
@@ -122,7 +133,7 @@ public class Principal {
 		
 		
 		System.out.println("LISTAR DATOS DEL USUARIO DESDE UN FICHERO");
-		FicheroDatosUsuario.leerDatos();
+		//FicheroDatosUsuario.leerDatos();
 		//System.out.println(FicheroDatosUsuario.leerDatos());
 		System.out.println("---------------------------------------------------\n");
 		
