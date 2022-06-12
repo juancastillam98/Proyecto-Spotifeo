@@ -102,10 +102,14 @@ public class Cancion extends ObjetoConSonido{
 	 */
 	public Cancion(String nombre) throws SQLException {
 		Statement smt = ConexionBD.conectar();
-		ResultSet consulta = smt.executeQuery("select nombre from cancion where cancion.nombre = '"+nombre+"'");
+		ResultSet consulta = smt.executeQuery("select cancion.nombre, usuario.nombre \r\n"
+				+ "from cancion \r\n"
+				+ "join usuario on cancion.artista_email = usuario.email\r\n"
+				+ "where cancion.artista_email in (select usuario.email from usuario\r\n"
+				+ "where cancion.nombre = '"+nombre+"')");
 		if(consulta.next()) {
 			this.setNombre(consulta.getString("nombre"));
-
+			
 		}else {
 			ConexionBD.desconectar();
 			throw new SQLException("No se encuentra la cancion");

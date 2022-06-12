@@ -262,9 +262,9 @@ public class PantallaInicio extends JPanel{
 		add(panelDerecho, BorderLayout.EAST);
 		GridBagLayout gbl_panelDerecho = new GridBagLayout();
 		gbl_panelDerecho.columnWidths = new int[]{15, 0, 15, 0};
-		gbl_panelDerecho.rowHeights = new int[]{19, 0, 0, 0, 0};
+		gbl_panelDerecho.rowHeights = new int[]{19, 0, 0, 0, 0, 0, 0};
 		gbl_panelDerecho.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panelDerecho.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelDerecho.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelDerecho.setLayout(gbl_panelDerecho);
 		
 		JButton botonAñadirPlaylist = new BotonNegro("A\u00F1adir Playlist");
@@ -275,10 +275,20 @@ public class PantallaInicio extends JPanel{
 			}
 		});
 		GridBagConstraints gbc_botonAñadirPlaylist = new GridBagConstraints();
-		gbc_botonAñadirPlaylist.insets = new Insets(0, 0, 0, 5);
+		gbc_botonAñadirPlaylist.insets = new Insets(0, 0, 5, 5);
 		gbc_botonAñadirPlaylist.gridx = 1;
 		gbc_botonAñadirPlaylist.gridy = 3;
 		panelDerecho.add(botonAñadirPlaylist, gbc_botonAñadirPlaylist);
+		
+		BotonNegro botonBuscarCanciones = new BotonNegro("A\u00F1adir Playlist");
+		
+		botonBuscarCanciones.setText("BuscarCancion");
+		botonBuscarCanciones.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+		GridBagConstraints gbc_botonBuscarCanciones = new GridBagConstraints();
+		gbc_botonBuscarCanciones.insets = new Insets(0, 0, 0, 5);
+		gbc_botonBuscarCanciones.gridx = 1;
+		gbc_botonBuscarCanciones.gridy = 5;
+		panelDerecho.add(botonBuscarCanciones, gbc_botonBuscarCanciones);
 		
 		JPanel panelCentral = new JPanel();
 		add(panelCentral, BorderLayout.CENTER);
@@ -470,6 +480,22 @@ public class PantallaInicio extends JPanel{
 		        panelPlaylist.add(listaPlaylist);
 		        
 		        
+			}
+		});
+		
+		//Buscar canciones
+		botonBuscarCanciones.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String nombre= JOptionPane.showInputDialog(ventana, "Introduce un de cancion","Buscar Cancion",JOptionPane.DEFAULT_OPTION);
+				try {
+					Cancion cancion = new Cancion(nombre);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				modeloListaPlaylist.addElement(nombre);
+				panelListarCancionesPlaylist.add(listaCancionesPlaylist);
 			}
 		});
 	}

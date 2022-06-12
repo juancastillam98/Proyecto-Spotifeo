@@ -201,7 +201,7 @@ public class PantallaRegistro extends JPanel{
 				String nombreUsuario=campoNombre.getText();
 				String contraseña=new String(campoContraseña.getPassword());
 				String email=campoEmail.getText();
-				String foto="./fotos/UsuarioHombreDefault.jpg";
+				String foto="./fotos/UsuarioHombreDefault.jpg";//ffoto por defecto
 				Boolean esPremium=false;
 				if(radioSiEsPremium.isSelected()) {
 					// string estilo = pop
@@ -210,7 +210,7 @@ public class PantallaRegistro extends JPanel{
 					esPremium=true;
 				}
 				try {
-					new Usuario(email, nombreUsuario, foto,  contraseña, esPremium);
+					ventana.usuarioLogueado=new Usuario(email, nombreUsuario, foto,  contraseña, esPremium);
 					JOptionPane.showMessageDialog(ventana,"Registrado con exito","Registrado Completado", JOptionPane.PLAIN_MESSAGE);
 					FicheroDatosUsuario.añadirDatosFicheros(email);
 					ventana.irAPantalla("inicio");
