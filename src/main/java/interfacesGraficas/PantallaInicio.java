@@ -65,6 +65,9 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.ImageIcon;
+import javax.swing.JTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 /**
  * Pantalla de menú principal de la aplicación.
  * @param ventana
@@ -75,6 +78,8 @@ public class PantallaInicio extends JPanel{
 	 */
 	private Ventana ventana;
 	private Cancion cancionActual;
+	private DefaultListModel cancionesModelo;
+	private JTextField textFieldBuscarCanciones;
 	
 	public PantallaInicio(final Ventana ventana) {
 		Reproductor reproductor;//declaro una referencia a la interface Reproductor
@@ -262,9 +267,9 @@ public class PantallaInicio extends JPanel{
 		add(panelDerecho, BorderLayout.EAST);
 		GridBagLayout gbl_panelDerecho = new GridBagLayout();
 		gbl_panelDerecho.columnWidths = new int[]{15, 0, 15, 0};
-		gbl_panelDerecho.rowHeights = new int[]{19, 0, 0, 0, 0, 0, 0};
-		gbl_panelDerecho.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panelDerecho.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panelDerecho.rowHeights = new int[]{19, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panelDerecho.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_panelDerecho.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelDerecho.setLayout(gbl_panelDerecho);
 		
 		JButton botonAñadirPlaylist = new BotonNegro("A\u00F1adir Playlist");
@@ -285,10 +290,21 @@ public class PantallaInicio extends JPanel{
 		botonBuscarCanciones.setText("BuscarCancion");
 		botonBuscarCanciones.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		GridBagConstraints gbc_botonBuscarCanciones = new GridBagConstraints();
-		gbc_botonBuscarCanciones.insets = new Insets(0, 0, 0, 5);
+		gbc_botonBuscarCanciones.insets = new Insets(0, 0, 5, 5);
 		gbc_botonBuscarCanciones.gridx = 1;
 		gbc_botonBuscarCanciones.gridy = 5;
 		panelDerecho.add(botonBuscarCanciones, gbc_botonBuscarCanciones);
+		
+		textFieldBuscarCanciones = new JTextField();
+		
+		textFieldBuscarCanciones.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		GridBagConstraints gbc_textFieldBuscarCanciones = new GridBagConstraints();
+		gbc_textFieldBuscarCanciones.insets = new Insets(0, 0, 0, 5);
+		gbc_textFieldBuscarCanciones.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldBuscarCanciones.gridx = 1;
+		gbc_textFieldBuscarCanciones.gridy = 7;
+		panelDerecho.add(textFieldBuscarCanciones, gbc_textFieldBuscarCanciones);
+		textFieldBuscarCanciones.setColumns(10);
 		
 		JPanel panelCentral = new JPanel();
 		add(panelCentral, BorderLayout.CENTER);
@@ -382,7 +398,7 @@ public class PantallaInicio extends JPanel{
 				
 				PlayList lista = new PlayList();
 				//cuando haga click en una playlist
-				DefaultListModel cancionesModelo = new DefaultListModel();
+				 cancionesModelo = new DefaultListModel();
 				listaCancionesPlaylist.setModel(cancionesModelo);//añado el modelo al Jlist
 				ArrayList<Cancion> todasCanciones=lista.getCancionesPlayList(listaSeleccionada);//devuelve un arraylist
 		        //System.out.println(String.valueOf(sampleObject));
@@ -483,7 +499,9 @@ public class PantallaInicio extends JPanel{
 			}
 		});
 		
-		//Buscar canciones
+
+		
+		//Buscar canciones -- boton
 		botonBuscarCanciones.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -494,7 +512,8 @@ public class PantallaInicio extends JPanel{
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				modeloListaPlaylist.addElement(nombre);
+				cancionesModelo.removeAllElements();
+				cancionesModelo.addElement(nombre);
 				panelListarCancionesPlaylist.add(listaCancionesPlaylist);
 			}
 		});

@@ -1,4 +1,4 @@
-apapa@apapa
-apapa
+juan@juan
+juan
 ./fotos/UsuarioHombreDefault.jpg
-true
+false
