@@ -47,7 +47,6 @@ public class Artista extends Usuario{
 				"insert into artista values ('"+usuario.getEmail()+"')"
 				)>0) {
 			this.email=usuario.getEmail();
-			System.out.println("contenido this "+this.email);
 		}else {
 			ConexionBD.desconectar();
 			throw new SQLException("No se ha podido conectar con la BD");

@@ -35,7 +35,7 @@ public class ReproducirCanciones implements Reproductor{
 		if (reproducirCancion.isAlive()) {
 			System.out.println("cancion reproduciendo");
 		}else {
-			System.out.println("Cancin no reproducicendo");
+			System.out.println("Cancion no reproducicendo");
 		}
 		try {
 			reproducirCancion.sleep(100000000);

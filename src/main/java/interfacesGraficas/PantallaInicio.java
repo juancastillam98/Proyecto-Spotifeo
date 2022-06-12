@@ -188,7 +188,7 @@ public class PantallaInicio extends JPanel{
 		gbc_labelEsPremium.gridy = 11;
 		panelInformacionUsr.add(labelEsPremium, gbc_labelEsPremium);
 		
-		JPanel panelPlaylist = new JPanel();
+		final JPanel panelPlaylist = new JPanel();
 		panelPlaylist.setSize(200, 300);
 		panelPlaylist.setBounds(20, 20, 100, 300);
 		FlowLayout flowLayout = (FlowLayout) panelPlaylist.getLayout();
@@ -203,7 +203,7 @@ public class PantallaInicio extends JPanel{
 		 */
 		final JList listaPlaylist = new JList();
 		listaPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
-		DefaultListModel modeloListaPlaylist = new DefaultListModel();
+		final DefaultListModel modeloListaPlaylist = new DefaultListModel();
 		listaPlaylist.setModel(modeloListaPlaylist);
 		
 		try {
@@ -282,8 +282,7 @@ public class PantallaInicio extends JPanel{
 		
 		JPanel panelCentral = new JPanel();
 		add(panelCentral, BorderLayout.CENTER);
-		System.out.println("dimensiones" +panelCentral.getWidth() +" - "+panelCentral.getBounds());
-		System.out.println("dimensiones panelPlaylist" +panelPlaylist.getWidth() +" - "+panelPlaylist.getBounds());
+	
 		GridBagLayout gbl_panelCentral = new GridBagLayout();
 		gbl_panelCentral.columnWidths = new int[]{30, 109, 0, 0, 0, 30, 0};
 		gbl_panelCentral.rowHeights = new int[]{24, 0, 0, 0, 0, 0, 0, 0};
@@ -379,7 +378,7 @@ public class PantallaInicio extends JPanel{
 		        //System.out.println(String.valueOf(sampleObject));
 
 				for (Cancion cancion : todasCanciones) {
-					System.out.println("Cancion ---> "+cancion);
+					//System.out.println("Cancion ---> "+cancion);
 					cancionesModelo.addElement(cancion);//añado las canciones al modelo
 				}
 				panelListarCancionesPlaylist.add(listaCancionesPlaylist);//añado la lista, con las canciones, al panel
@@ -403,11 +402,27 @@ public class PantallaInicio extends JPanel{
 
 		//CLICK EN REPRODUCIR
 		botonReproducir.addMouseListener(new MouseAdapter() {
-			@Override
+			byte click=0;
 			public void mouseClicked(MouseEvent e) {
+				click=(byte) ((click +1)%2);
 				
+				//NO se como pner MusicaReproducir global, para que no me salga la restricción final y pueda llamar siempre que quiera al hilo
 				cancionActual=(Cancion) listaCancionesPlaylist.getSelectedValue();
-				reproducirCanciones.reproducir(cancionActual);
+				MusicaReproducir reproducirCancion = new MusicaReproducir(cancionActual);
+				
+				if(click==1) {
+					reproducirCancion.start();
+				}else {
+					try {
+						reproducirCancion.sleep(100);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				
+				
+				//reproducirCanciones.reproducir(cancionActual, click, reproducirCancion);
 			}
 		});
 		//CLICK EN PAUSAR
@@ -439,19 +454,20 @@ public class PantallaInicio extends JPanel{
 				String destino = "./fotos/";
 		 
 				if (origen.renameTo(new File(destino+ origen.getName()))) {
-					System.out.println("File is moved to " + destino);
+					//System.out.println("File is moved to " + destino);
 				} else {
-					System.out.println("Failed");
+					//System.out.println("Failed");
 				}
-				
+				PlayList nuevaList=null;
 		        try {
-					PlayList nuevaList = new PlayList(destino, nombre, ventana.usuarioLogueado, fechaIncorporacion);
+		            nuevaList = new PlayList(destino, nombre, ventana.usuarioLogueado, fechaIncorporacion);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 		                
-		        
+		        modeloListaPlaylist.addElement(nuevaList.getNombre());
+		        panelPlaylist.add(listaPlaylist);
 		        
 		        
 			}

@@ -63,6 +63,28 @@ public class PlayList extends ObjetoConNombre{
 		
 		ConexionBD.desconectar();
 	}
+	
+	/**
+	 * Constructor que devuelve toda la información de todas las playlist de un usuario
+	 * @param usuario_email
+	 * @throws SQLException
+	 * @throws UsuarioIncorrectoException
+	 */
+	public PlayList(String usuario_email) throws SQLException, UsuarioIncorrectoException{
+		Statement smt = ConexionBD.conectar();
+		ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+usuario_email+"'");
+		if(consulta.next()) {
+			this.setFoto(consulta.getString("foto"));
+			this.setNombre(consulta.getString("nombre"));
+			this.usuario=new Usuario(consulta.getString("usuario_email"));
+			this.setFechaCreacion(consulta.getTimestamp("fechaincorporacion").toLocalDateTime());
+		}else {
+			ConexionBD.desconectar();
+			throw new UsuarioIncorrectoException("No existe el email "+usuario_email);
+		}
+		ConexionBD.desconectar();
+	}
+	
 	 
 	/***
 	 * Metodo que inserta una cancion en una playlist
@@ -89,27 +111,6 @@ public class PlayList extends ObjetoConNombre{
 		}
 		ConexionBD.desconectar();
 	}
-	/**
-	 * Constructor que devuelve toda la información de todas las playlist de un usuario
-	 * @param usuario_email
-	 * @throws SQLException
-	 * @throws UsuarioIncorrectoException
-	 */
-	public PlayList(String usuario_email) throws SQLException, UsuarioIncorrectoException{
-		Statement smt = ConexionBD.conectar();
-		ResultSet consulta = smt.executeQuery("select * from playlist where usuario_email = '"+usuario_email+"'");
-		if(consulta.next()) {
-			this.setFoto(consulta.getString("foto"));
-			this.setNombre(consulta.getString("nombre"));
-			this.usuario=new Usuario(consulta.getString("usuario_email"));
-			this.setFechaCreacion(consulta.getTimestamp("fechaincorporacion").toLocalDateTime());
-		}else {
-			ConexionBD.desconectar();
-			throw new UsuarioIncorrectoException("No existe el email "+usuario_email);
-		}
-		ConexionBD.desconectar();
-	}
-	
 
 	/**
 	 * Método que devuelve todas las canciones de una playlist
