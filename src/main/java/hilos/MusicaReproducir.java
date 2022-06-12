@@ -24,6 +24,7 @@ public class MusicaReproducir extends Thread{
 	 * Canción a reproducir
 	 */
 	private Cancion cancion;
+	private AudioInputStream audio;
 /**
  * Constructor que recibe un objeto de tipo canción
  * @param nombre nombre del objeto de tipo Cancion

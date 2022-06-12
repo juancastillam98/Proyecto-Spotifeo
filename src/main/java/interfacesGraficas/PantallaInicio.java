@@ -16,6 +16,7 @@ import javax.swing.border.LineBorder;
 import clases.Cancion;
 import clases.PlayList;
 import clases.Usuario;
+import componentesVisuales.BotonNegro;
 import excepciones.ContraseñaIncorrectaException;
 import excepciones.EmailInvalidoException;
 import excepciones.UsuarioIncorrectoException;
@@ -30,18 +31,34 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.JScrollBar;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import java.awt.SystemColor;
 
+import javax.lang.model.element.Element;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.awt.event.ActionEvent;
 import java.awt.FlowLayout;
@@ -57,6 +74,8 @@ public class PantallaInicio extends JPanel{
 	 * Indica la ventan sobre la que nos encotramos
 	 */
 	private Ventana ventana;
+	private Cancion cancionActual;
+	
 	public PantallaInicio(final Ventana ventana) {
 		Reproductor reproductor;//declaro una referencia a la interface Reproductor
 		
@@ -177,11 +196,7 @@ public class PantallaInicio extends JPanel{
 		panelPlaylist.setBackground(SystemColor.controlHighlight);
 		panelIzquierdo.add(panelPlaylist, BorderLayout.CENTER);
 		
-		
 
-		
-		
-		
 		
 		/**
 		 * Mostrar las playlist. Solamente quiero saber el nombre
@@ -191,10 +206,6 @@ public class PantallaInicio extends JPanel{
 		DefaultListModel modeloListaPlaylist = new DefaultListModel();
 		listaPlaylist.setModel(modeloListaPlaylist);
 		
-		/*ArrayList<PlayList> playlistUsuario=null;
-		for (PlayList playList : playlistUsuario) {
-			modeloListaPlaylist.addElement(playList+"\n");
-		}*/
 		try {
 			ArrayList<PlayList> playlistUsuario = ventana.usuarioLogueado.getBiblioteca();
 			for (PlayList playList : playlistUsuario) {
@@ -208,7 +219,7 @@ public class PantallaInicio extends JPanel{
 		
 		panelPlaylist.add(listaPlaylist);
 
-		//hasta aqui
+		
 		
 		
 		JPanel panelSur = new JPanel();
@@ -230,6 +241,14 @@ public class PantallaInicio extends JPanel{
 		gbc_lblNewLabel.gridy = 1;
 		panelSur.add(lblNewLabel, gbc_lblNewLabel);
 		
+		JButton botonPausar = new JButton("Pausar");
+		botonPausar.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		GridBagConstraints gbc_botonPausar = new GridBagConstraints();
+		gbc_botonPausar.insets = new Insets(0, 0, 5, 5);
+		gbc_botonPausar.gridx = 6;
+		gbc_botonPausar.gridy = 1;
+		panelSur.add(botonPausar, gbc_botonPausar);
+		
 
 		
 		JLabel lblNewLabel_1 = new JLabel("Reproductor");
@@ -248,7 +267,8 @@ public class PantallaInicio extends JPanel{
 		gbl_panelDerecho.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panelDerecho.setLayout(gbl_panelDerecho);
 		
-		JButton botonAñadirPlaylist = new JButton("A\u00F1adir Playlist");
+		JButton botonAñadirPlaylist = new BotonNegro("A\u00F1adir Playlist");
+		
 		botonAñadirPlaylist.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
 		botonAñadirPlaylist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -319,7 +339,22 @@ public class PantallaInicio extends JPanel{
 		
 		//TODO implementar el reproductor
 		final JList listaCancionesPlaylist = new JList();
-		listaCancionesPlaylist.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		listaCancionesPlaylist.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		
+		
+		/**
+		 * Interfaz reproductor
+		 */
+		JButton botonReproducir = new JButton("Reproducir");
+		botonReproducir.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		GridBagConstraints gbc_botonReproducir = new GridBagConstraints();
+		gbc_botonReproducir.insets = new Insets(0, 0, 5, 5);
+		gbc_botonReproducir.gridx = 8;
+		gbc_botonReproducir.gridy = 1;
+		panelSur.add(botonReproducir, gbc_botonReproducir);
+		
+		
+		
 		
 		/**
 		 * LISTENERS
@@ -328,9 +363,7 @@ public class PantallaInicio extends JPanel{
 		/**
 		 * Mosstrar todas las canciones que tiene una playlist al hacer click sobre una de ellas
 		 */
-		//Jlist donde se mostrarán todas las canciones de una playlist
-		//final JList listaCancionesPlaylist = new JList();
-		
+
 		//Click en un elemento de una playlist
 		listaPlaylist.addMouseListener(new MouseAdapter() {
 			@Override
@@ -358,30 +391,70 @@ public class PantallaInicio extends JPanel{
 		/***************  HACER REPRODUCIR UNA CANCIÓNN *******************
 		 * Evento al hacer click en una cancion.
 		 */
-		final Cancion cancionARperoducirBoton=null;
+
 		listaCancionesPlaylist.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Cancion cancionARperoducir = (Cancion) listaCancionesPlaylist.getSelectedValue();
-				cancionARperoducirBoton=cancionARperoducir;
-				ReproducirCanciones reproducirCanciones = new ReproducirCanciones();
-				reproducirCanciones.reproducir(cancionARperoducir);
+				//Cancion cancionARperoducir = (Cancion) listaCancionesPlaylist.getSelectedValue();//esto es un objeto de cancion
 			}
 		});
 		
-		//Reproductor
-		JButton botonReproducir = new JButton("Reproducir");
+		final ReproducirCanciones reproducirCanciones = new ReproducirCanciones();
+
+		//CLICK EN REPRODUCIR
 		botonReproducir.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				
+				cancionActual=(Cancion) listaCancionesPlaylist.getSelectedValue();
+				reproducirCanciones.reproducir(cancionActual);
 			}
 		});
-		botonReproducir.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		GridBagConstraints gbc_botonReproducir = new GridBagConstraints();
-		gbc_botonReproducir.insets = new Insets(0, 0, 5, 5);
-		gbc_botonReproducir.gridx = 8;
-		gbc_botonReproducir.gridy = 1;
-		panelSur.add(botonReproducir, gbc_botonReproducir);
+		//CLICK EN PAUSAR
+		botonPausar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				cancionActual=(Cancion) listaCancionesPlaylist.getSelectedValue();
+				reproducirCanciones.pausar(cancionActual);
+			}
+		});
 		
+		//Añadir una nueva playlist
+		botonAñadirPlaylist.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				String nombre= JOptionPane.showInputDialog(ventana, "Introduce un nombre para playlist","Agregar playlist",JOptionPane.DEFAULT_OPTION);
+		        String usuarioemail=ventana.usuarioLogueado.getEmail();
+		        LocalDateTime fechaIncorporacion=LocalDateTime.now();//El constructor de playlist, se encargar de darle el formato
+		     
+		        File rutaFichero = null;
+		        JFileChooser fChooser = new JFileChooser();
+		        int seleccion = fChooser.showOpenDialog(ventana);
+		        if(seleccion== JFileChooser.APPROVE_OPTION) {//si hace click en aprovar
+		        	rutaFichero =fChooser.getSelectedFile();//en file guardo el fichero
+		        }
+		        
+		        File origen = rutaFichero;
+				String destino = "./fotos/";
+		 
+				if (origen.renameTo(new File(destino+ origen.getName()))) {
+					System.out.println("File is moved to " + destino);
+				} else {
+					System.out.println("Failed");
+				}
+				
+		        try {
+					PlayList nuevaList = new PlayList(destino, nombre, ventana.usuarioLogueado, fechaIncorporacion);
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+		                
+		        
+		        
+		        
+			}
+		});
 	}
 }

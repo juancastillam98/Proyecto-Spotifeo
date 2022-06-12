@@ -12,4 +12,9 @@ public interface Reproductor {
 	 * @param cancion
 	 */
 	public void reproducir(Cancion cancion);
+	/**
+	 * Función que hace pausar una cancion
+	 * @param cancion
+	 */
+	public void pausar(Cancion cancion);
 }
